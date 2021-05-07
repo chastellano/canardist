@@ -1,0 +1,34 @@
+doctype html
+html(lang='en')
+    head
+        title Canardist
+        meta(charset='utf-8')
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+        link(rel="stylesheet" href="./css/bootstrap.min.css")
+        link(rel="stylesheet" href="./css/all.css")
+        link(rel="stylesheet" type="text/css" href="./css/styles.css")
+    body
+        div(class="container mt-4")
+            div(class="row")
+                div(class="col-10 col-sm-8 col-lg-6 mx-auto text-center mt-3")
+                    div(class="mb-2")
+                        h4 Welcome to Canardist!
+                    div(class="mt-4")
+                        p 5-10 people required.
+                        p Play with friends across multiple devices.
+                        p Create a new game or join an existing game, enter a game ID below and click 'GO'.
+                    
+                    div(class="input-group input-group-lg mb-3")
+                        input(id="pathInp" type="text" class="form-control" placeholder=gameId aria-label="Game ID")
+                        div(class="input-group-append")
+                            button(class="input-group-text" id="goButt") GO
+                    div
+                        p(id="charWarning" style="display: none" class="text-danger align-self-center")
+                            small ID may only consist of letters, numbers and . - _
+                        p(id="idWarning" style="display: none" class="text-danger align-self-center")
+                            small Enter a new or existing game ID
+            
+        script(src="./javascript/jquery.js")
+        script(src="./javascript/popper.min.js")
+        script(src="./javascript/bootstrap.min.js")
+        script(type="module" src="./javascript/home.js")
