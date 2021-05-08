@@ -4,7 +4,8 @@
   "description": "Canardist card game",
   "main": "server/index",
   "scripts": {
-    "start": "nodemon run server/index",
+    "start": "node index",
+    "dev": "nodemon index",
     "usemin": "usemin index.html -d dist --htmlmin -o dist/index.html",
     "clean": "rimraf dist",
     "build": "npm run clean && npm run usemin"
