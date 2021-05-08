@@ -1,15 +1,11 @@
-import baseUrl from './baseUrl'
+import baseUrl from './baseUrl.js'
 const socket = io.connect(baseUrl);
 import { anim, cards, checkcheck, insertMsg } from './helpers.js';
 
 let shareLink;
 let currentPlayers = {};
-// let gameId = ''; //need?
 let handle = '';
 
-// socket.on('room', id => { //need?
-//     gameId = id;
-// });
 $('#join').focus();
 
 $('#join').click(() => {
@@ -139,15 +135,6 @@ socket.on('addPlayer', (players, num, name) => {
         `
         $('#currentPlayers').append(p)
     });
-
-    // for (let player in players) {
-    //     currentPlayers[player] = currentPlayers[player] || {};  
-    //     const p = `
-    //         <p id="chat${player}">${player}</p>
-    //     `
-    //     $('#currentPlayers').append(p)
-    // }
-
 
     checkNumPlayers(num);
     console.log(`There are ${num} players in the room`)

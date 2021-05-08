@@ -116,6 +116,7 @@ module.exports = io => {
                 if (num === 0) {
                     if (activeIds.indexOf(gameId) !== -1) {
                         const i = activeIds.indexOf(gameId);
+                        console.log(`ROOM ${gameId} DELETED`);
                         activeIds.splice(i, 1);
                         console.log( `There are ${activeIds.length} active rooms: ${activeIds}`);
                     }

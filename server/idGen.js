@@ -1,6 +1,6 @@
 const words = {
-    first: [ 'community', 'randy'],// 'frothing', 'slippery', 'inverted', 'burly', 'serene', 'tidy' ],
-    second: [ 'badger', 'bathtub'] //, 'bucket', 'pulpit', 'scone', 'genius', 'witness', 'blanket' ]
+    first: [ 'community', 'randy', 'frothing', 'slippery', 'inverted', 'burly', 'serene', 'tidy' ],
+    second: [ 'badger', 'bathtub', 'bucket', 'pulpit', 'scone', 'genius', 'witness', 'blanket' ]
 }
 
 const shuffle= arr => {

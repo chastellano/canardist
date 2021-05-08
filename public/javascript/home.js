@@ -1,4 +1,4 @@
-import baseUrl from './baseUrl'
+import baseUrl from './baseUrl.js'
 console.log('CONNECTED')
 
 const goButt = document.getElementById('goButt');
