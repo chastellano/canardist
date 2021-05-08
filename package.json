@@ -1,11 +1,14 @@
 {
   "name": "canardist",
   "version": "1.0.0",
+  "engines": {
+    "node": "14.9.0"
+  } ,
   "description": "Canardist card game",
-  "main": "server/index",
+  "main": "index.js",
   "scripts": {
-    "start": "node index",
-    "dev": "nodemon index",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "usemin": "usemin index.html -d dist --htmlmin -o dist/index.html",
     "clean": "rimraf dist",
     "build": "npm run clean && npm run usemin"
