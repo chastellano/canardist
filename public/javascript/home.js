@@ -1,4 +1,4 @@
-const baseUrl = 'https://localhost:3443/';
+import baseUrl from './baseUrl'
 console.log('CONNECTED')
 
 const goButt = document.getElementById('goButt');

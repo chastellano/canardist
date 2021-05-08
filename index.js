@@ -6,7 +6,7 @@ const socket = require('socket.io');
 const homeRouter = require('./server/homeRouter');
 
 const app = express();
-const server = app.listen(3000, function(){
+const server = app.listen(process.env.PORT || 3000, function(){
     console.log('listening on port 3000');
 });
 
@@ -19,7 +19,7 @@ const options = {
 
 const secureServer = https.createServer(options, app);
 
-secureServer.listen(app.get('secPort'), () => {
+secureServer.listen(process.env.PORT || app.get('secPort'), () => {
     console.log('Secure server listening on port 3443');
 });
 

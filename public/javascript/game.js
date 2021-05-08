@@ -1,4 +1,4 @@
-const baseUrl = 'https://localhost:3443'
+import baseUrl from './baseUrl'
 const socket = io.connect(baseUrl);
 import { anim, cards, checkcheck, insertMsg } from './helpers.js';
 
