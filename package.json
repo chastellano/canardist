@@ -8,10 +8,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js",
-    "usemin": "usemin index.html -d dist --htmlmin -o dist/index.html",
-    "clean": "rimraf dist",
-    "build": "npm run clean && npm run usemin"
+    "dev": "nodemon index.js"
   },
   "author": "Charles",
   "license": "ISC",
