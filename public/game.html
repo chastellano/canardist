@@ -11,7 +11,7 @@
         <!-- endbuild -->
     </head>
     <body>
-        <div class="container mx-auto m-0 p-0">
+        <div id="mainContainer" class="container mx-auto m-0 p-0 h-100">
             <div id="joinDiv" class="text-center mt-5" style="display:block">
                 <h2 id="firstHeader" class="text-center mt-5 mb-4">CANARDIST</h2>
                 <button class="btn btn-lg btn-dark mt-3" id="join">Enter</button>
@@ -19,12 +19,12 @@
                     <p class="text-danger">Game is in progress, try another room.</p>
                 </div> 
             </div>
-            <div id="gameBody" class="row" style="display: none">
-                <div id="consoleDiv" class="card mx-auto bg-dark py-0 vh-100 col col-md-8 col-lg-6">
-                    <div class="row p-0 mx-auto m-0">
-                        <div class="col mx-auto m-0 p-0">
-                            <div class="card border-0">
-                                <div class="card-header pt-2 text-center bg-dark">
+            <div id="gameBody" class="mx-auto m-0 h-100 col" style="display:none">
+                <div class="row h-100">
+                    <div id="consoleDiv" class="card mx-auto bg-dark px-1 px-sm-2 px-lg-3 h-100 col-xs-12 col-md-9 col-lg-7 col-xl-6">
+                        <!-- <div class="row p-0 mx-auto m-0"> -->
+                            <!-- <div class="col mx-auto p-0"> -->
+                                <!-- <div class="card m-0 border"> -->
                                     <div id="headerBanner" class="text-white">
                                         <div id="chatDropdownDiv" class="btn-group">
                                             <a href='#' data-toggle="dropdown"><i class="white fas fa-2x fa-caret-square-down"></i></a>
@@ -43,69 +43,69 @@
                                             <a id="copyLink" href='#'><i class="white fas fa-2x fa-share-alt-square"></i></a>
                                         </div>
                                     </div>
-                                    <div id="staticPush" style="position:relative" class="bluePush">
-                                        <!-- <p class="staticMsg bg-danger text-white bold">RED TEAM WINS!!!</p> -->
-                                        <!-- <p class="text-white staticMsg bg-black bold">BLACK TEAM WINS!!!</p> -->
-                                        <!-- <p class="staticMsg bg-success text-white">Click below to vote on the proposed mission!</p> -->
-                                    </div>
-                                    
-                                </div>
-                                <div class="card-body p-0 bg-light">
-
-                                    <div id="chatBody" class="text-wrap">
-                                        <!-- <p class="scrollPush enterLeave text-center">* * * You has joined the room * * *</p> -->
-                                        <!-- <p class="scrollPush text-center enterLeave">* * * ${user} left the room * * *</p> -->
-                                        <!-- <p class="text-center scrollPush bold enterLeave">Booby proposes Babby, Scooby, Hooboo, Doobydoo, Clerberboo. Click below to vote!</p> -->
                                         
-                                    </div>
-                                </div>
+                                    <div id="consoleBody" class="card-body p-0 mt-0 bg-dark">
+                                        <div id="staticPush" style="position:relative" class="bluePush">
+                                            <!-- <p class="staticMsg bg-danger text-white bold">RED TEAM WINS!!!</p> -->
+                                            <!-- <p class="text-white staticMsg bg-black bold">BLACK TEAM WINS!!!</p> -->
+                                            <!-- <p class="staticMsg bg-success text-white">Click below to vote on the proposed mission!</p> -->
+                                        </div>
+
+                                        <div id="chatBody" class="text-wrap bg-light">
+                                            <!-- <p class="scrollPush enterLeave text-center">* * * You has joined the room * * *</p> -->
+                                            <!-- <p class="scrollPush text-center enterLeave">* * * ${user} left the room * * *</p> -->
+                                            <!-- <p class="text-center scrollPush bold enterLeave">Booby proposes Babby, Scooby, Hooboo, Doobydoo, Clerberboo. Click below to vote!</p> -->
+                                            
+                                        </div>
+                                        <div id="chatInpDiv" class="input-group input-group-sm mt-1">   
+                                            <input id="chatInput" class="form-control border form-control-sm" type="text" placeholder=" . . . ">
+                                            <div class="input-group-append">
+                                                <button type="button" class="input-group-text" id="chatSend">Send</button>
+                                            </div>
+                                        </div>
                                 
-                                <div class="card-footer bg-dark">
-            
-                                    <div id="chatInpDiv" class="input-group input-group-sm">   
-                                        <input id="chatInput" class="form-control border form-control-sm" type="text" placeholder=" . . . ">
-                                        <div class="input-group-append">
-                                            <button type="button" class="input-group-text" id="chatSend">Send</button>
+                                        <div id="buttonDiv" style="position:relative" class="notTurnButt">
+                                            <!-- <button class="btn btn-success col" style="position:absolute" id='startGameButt' type='button'>Start Game!</button> -->
+                                            <!-- <button id="propButt" style="position:absolute" class="btn btn-info bold col" type="button">V O T E</button> -->
                                         </div>
                                     </div>
-                            
-                                    <div id="buttonDiv" style="position:relative" class="notTurnButt">
-                                        <!-- <button class="btn btn-success col" style="position:absolute" id='startGameButt' type='button'>Start Game!</button> -->
-                                        <!-- <button id="propButt" style="position:absolute" class="btn btn-info bold col" type="button">V O T E</button> -->
-                                    </div>
-                                    <div class="container p-0 mt-2" id="scoreboardDiv" style="display: none">
-                                        <div class="row d-flex align-items-center">
-                                            <div class="col-6">
-                                                <table id="scoreboard" class="mx-auto table table-dark">
-                                                    <tbody>
-                                                        <tr>
-                                                            <th scope="row">Black Team</th>
-                                                            <td id="blackScore"><span id="blackNum"></span></td>
-                                                        </tr>
-                                                        <tr class="bg-danger">
-                                                            <th scope="row">Red Team</th>
-                                                            <td id="redScore"><spa id="redNum"></span></td>
-                                                        </tr>
-                                                        <tr class="bg-info">
-                                                            <th scope="row">Mission</th>
-                                                            <td id="currentScore"><span id="missionNum"></span></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="text-center">
-                                                    <!-- <p class="text-white text-center mb-0 text-nowrap"><small>YOUR CARD</small></p> -->
-                                                    <div id="playerIdentity" class="col-12 mx-auto">
-                                                        <img class="identity img-fluid" src="cardsJS/cards/as.svg"/>
+              
+                                    <div class="card-footer border-0 bg-dark">
+                
+                                        <div class="container p-0 mt-2" id="scoreboardDiv" style="display: none">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-6">
+                                                    <table id="scoreboard" class="mx-auto table table-dark">
+                                                        <tbody>
+                                                            <tr>
+                                                                <th scope="row">Black Team</th>
+                                                                <td id="blackScore"><span id="blackNum"></span></td>
+                                                            </tr>
+                                                            <tr class="bg-danger">
+                                                                <th scope="row">Red Team</th>
+                                                                <td id="redScore"><spa id="redNum"></span></td>
+                                                            </tr>
+                                                            <tr class="bg-info">
+                                                                <th scope="row">Mission</th>
+                                                                <td id="currentScore"><span id="missionNum"></span></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="text-center">
+                                                        <!-- <p class="text-white text-center mb-0 text-nowrap"><small>YOUR CARD</small></p> -->
+                                                        <div id="playerIdentity" class="col-12 mx-auto">
+                                                            <img class="identity img-fluid" src="cardsJS/cards/as.svg"/>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div> 
-                                </div>
-                            </div>
-                        </div>
+                                        </div> 
+                                    </div>
+                                <!-- </div> -->
+                            <!-- </div> -->
+                        <!-- </div> -->
                     </div>
                 </div>
             </div>

@@ -12,6 +12,21 @@ $('#join').click(() => {
     socket.emit('knock');
 });
 
+$(function() {
+    const h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    $("html, body").css({"height":h});
+});
+
+$(window).resize(() => {
+    if ($(window).height() < $('#consoleBody').outerHeight()) {
+        document.documentElement.scrollTop = $('#headerBanner').outerHeight();
+        $('#consoleBody').css('height', `${$(window).height()}`);
+    } else {
+        document.documentElement.scrollTop = 0;
+        $('#consoleBody').css('height', '25em');
+    }
+})
+
 
 socket.on('available', (bool, duplicate) => {
     console.log(bool)

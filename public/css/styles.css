@@ -1,4 +1,12 @@
+html {
+    margin:0;
+    padding:0;
+    height: 100%;
+}
+
 body {
+    min-height: 100%;
+    /* border: 5px solid red; */
     background-color: #beb4a8;
 }
 
@@ -8,6 +16,10 @@ body {
 
 .container {
     width: 100;
+}
+
+#nameModal .modal-content, #shareModal .modal-content {
+    max-width: 20em;
 }
 
 #nameInput, #shareLink {
@@ -213,8 +225,9 @@ body {
     width: 200px;
 }
 
-#consoleDiv .card-header {
-    padding: 0;
+#consoleHeader {
+    padding: .4em 0 0 0;
+    height: 3em;
     /* border: 1px solid white; */
 }
 
@@ -222,8 +235,18 @@ body {
     position: relative;
     display: flex;
     justify-content: center;
-    margin: .2em 0em .7em 0em;
+    padding: .7em 0 0 0;
+    margin: 0 0 0 0;
+    /* margin: .2em 0em .7em 0em; */
     /* border: 1px solid white; */
+}
+
+#consoleBody {
+    height: 25em;
+    min-height: 20em;
+    /* border: 3px solid red; */
+    display: flex;
+    flex-direction: column;
 }
 
 #chatDropdownDiv {
@@ -257,19 +280,23 @@ body {
 }
 
 #chatBody {
-    height: 17em;
+    height: 100%;
     overflow-y: scroll;
     font: 400 .8em sans-serif;
     padding: 0px 0px 5px 0px;
-}
-
-.card-body, #chatInpDiv {
     border: 4px inset grey;
     border-radius: 6px;
 }
 
+#chatInpDiv {
+    border: 4px inset grey;
+    border-radius: 6px;
+    /* margin: 0 .7em 0 .7em; */
+}
+
 #staticPush {
-    height: 2.8em;
+    height: 45px;
+    flex-shrink: 0;
     margin: .7em .7em .7em .7em;
     display: flex;
     align-items: center;
@@ -286,17 +313,17 @@ body {
 
 #chatSend {
     border-left: 3px solid #343a40;
-    /* border: 2px outset grey; */
     border-radius: 2px;
 }
 
 #buttonDiv {
-    height: 2.8em;
+    height: 45px;
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
     border: 4px outset grey;
-    margin-top: 1em;
+    margin: 1em .7em .7em .7em;
     border-radius: 6px;
     overflow: hidden;
 }
