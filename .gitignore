@@ -2,4 +2,3 @@ node_modules
 bin/server.cert
 bin/server.key
 dev
-public/javascript/baseUrl.js
