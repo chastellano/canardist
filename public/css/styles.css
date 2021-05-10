@@ -18,10 +18,6 @@ body {
     width: 100;
 }
 
-#nameModal .modal-content, #shareModal .modal-content {
-    max-width: 20em;
-}
-
 #nameInput, #shareLink {
     border: 4px inset grey;
 }
@@ -58,7 +54,11 @@ body {
     height: 3.5em;
 }
 
-#proposeModal .modal-content, #voteModal .modal-content, #outcomeModal .modal-content, #missionModal .modal-content {
+#nameModal .modal-content, #shareModal .modal-content {
+    max-width: 20em;
+}
+
+#proposeModal .modal-content, #voteModal .modal-content, #outcomeModal .modal-content, #roundModal .modal-content {
     max-width: 23em;
 }
 
@@ -72,7 +72,7 @@ body {
     padding-left: 0;
 }
 
-.fa-caret-square-down, .fa-share-alt-square {
+.fa-caret-square-down, .fa-share-alt-square, .fa-user-circle {
     font-size: 1.6em;
 }
 

@@ -174,6 +174,7 @@ socket.on('updatePlayer', arr => {
 
 socket.on('rmvPlayer', (left, num) => {
     $('#scoreboardDiv').css('display', 'none');
+    $('#outcomeModal').modal('hide');
     delete currentPlayers[left];
     const el = $('#chat'+left);
     el.remove();
@@ -353,7 +354,7 @@ socket.on('propModal', (buttons, round, max) => {
 });
 
 socket.on('voteLabels', (labels, checked, name) => {
-    $('#outcomeModal').modal('hide')
+    $('#outcomeModal').modal('hide');
     $('#voteSubmit').off('click');
     $('#voteButt').off('click');
     console.log('331: ' + checked);

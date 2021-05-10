@@ -27,7 +27,8 @@
                                 <!-- <div class="card m-0 border"> -->
                                     <div id="headerBanner" class="text-white">
                                         <div id="chatDropdownDiv" class="btn-group">
-                                            <a href='#' data-toggle="dropdown"><i class="white fas fa-2x fa-caret-square-down"></i></a>
+                                            <!-- <a href='#' data-toggle="dropdown"><i class="white fas fa-2x fa-caret-square-down"></i></a> -->
+                                            <a data-toggle="dropdown"><i class="white fas fa-2x fa-user-circle"></i></a>
                                             <div id="chatDropdown" class="dropdown-menu dropdown-menu-left">
                                                 <div id="currentPlayers" class="border px-2 dropdown-item-text">
                                                     <p>Bob</p>
@@ -212,7 +213,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" id="roundPropose" class="btn btn-dark mx-auto">SUBMIT</button>
+                            <button type="submit" id="roundPropose" class="btn btn-lg btn-dark mx-auto">Submit</button>
                         </div>
                     </div>
                 </div>
@@ -258,7 +259,7 @@
             <div id="roundModal" class="modal fade" data-keyboard="false" data-backdrop="static"  role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="row">
-                        <div class="col">
+                        <div class="col mx-auto">
                             <div class="modal-content mx-auto">
                                 <div class="modal-header">
                                     <h5 class="modal-title text-center" id="roundModalHeader">Pick your card:</h5>
@@ -297,14 +298,14 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
                         <div class="modal-body">
-                            <div id="submissionCards" class="d-flex col flex-wrap p-1 justify-content-center"> 
+                            <div id="submissionCards" class="d-flex mx-auto flex-wrap p-1 justify-content-center"> 
                                 <div>
                                     <img class='identityCardModal mx-auto' src='cardsJS/cards/AS.svg'>
                                 </div>
                                 <div>
                                     <img class='identityCardModal mx-auto' src='cardsJS/cards/KS.svg'>
                                 </div>
-                                <div>
+                                <!-- <div>
                                     <img class='identityCardModal mx-auto' src='cardsJS/cards/QS.svg'>
                                 </div>
                                 <div>
@@ -312,7 +313,7 @@
                                 </div>
                                 <div>
                                     <img class='identityCardModal mx-auto' src='cardsJS/cards/10S.svg'>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>

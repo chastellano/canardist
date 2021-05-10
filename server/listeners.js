@@ -130,6 +130,7 @@ module.exports = io => {
         
             if (rooms[gameId] && rooms[gameId]['game']) {
                 rooms[gameId]['game'] = null;
+                //notification that game ended because someone left
             } 
             
             console.log(`Player ${sock} has left ${gameId}`)
