@@ -48,7 +48,7 @@
                                         <div id="staticPush" style="position:relative" class="bluePush">
                                             <!-- <p class="staticMsg bg-danger text-white bold">RED TEAM WINS!!!</p> -->
                                             <!-- <p class="text-white staticMsg bg-black bold">BLACK TEAM WINS!!!</p> -->
-                                            <!-- <p class="staticMsg bg-success text-white">Click below to vote on the proposed mission!</p> -->
+                                            <!-- <p class="staticMsg bg-success text-white">Click below to vote on the proposal!</p> -->
                                         </div>
 
                                         <div id="chatBody" class="text-wrap bg-light">
@@ -86,8 +86,8 @@
                                                                 <td id="redScore"><spa id="redNum"></span></td>
                                                             </tr>
                                                             <tr class="bg-info">
-                                                                <th scope="row">Mission</th>
-                                                                <td id="currentScore"><span id="missionNum"></span></td>
+                                                                <th scope="row">Round</th>
+                                                                <td id="currentScore"><span id="roundNum"></span></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -212,7 +212,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" id="missionPropose" class="btn btn-dark mx-auto">Propose Mission</button>
+                            <button type="submit" id="roundPropose" class="btn btn-dark mx-auto">SUBMIT</button>
                         </div>
                     </div>
                 </div>
@@ -223,7 +223,7 @@
                     <div class="modal-content mx-auto">
                         <div class="modal-body pt-4">
                             <div>
-                                <p class="text-center"><strong>Do you approve this mission?</strong></p>
+                                <p class="text-center"><strong>Do you approve this proposal?</strong></p>
                             </div>
                             <div id="proposedPlayers" class="d-flex flex-wrap justify-content-center mb-5">
                                 <div class="userButtDiv">
@@ -238,11 +238,11 @@
                             </div>
                             <div id="voteButts" class="row m-0">
                                 <div class="col d-flex p-0 justify-content-center">
-                                    <input type="radio" class="hideInput" id="yes" name="voteMission" value="yes">
+                                    <input type="radio" class="hideInput" id="yes" name="voteRound" value="yes">
                                     <label for="yes" id="thumbsUp" class="btn btn-sm btn-outline-success m-0 upDownButts"><i class="far fa-2x fa-thumbs-up"></i></label>
                                 </div>
                                 <div class="col d-flex p-0 justify-content-center">
-                                    <input type="radio" class="hideInput" id="no" name="voteMission" value="no">
+                                    <input type="radio" class="hideInput" id="no" name="voteRound" value="no">
                                     <label for="no" id="thumbsDown" class="btn btn-sm btn-outline-danger m-0 upDownButts"><i class="far fa-2x fa-thumbs-down fa-flip-horizontal"></i></label>
                                 </div>
                             </div>
@@ -255,13 +255,13 @@
                 </div>
             </div>
 
-            <div id="missionModal" class="modal fade" data-keyboard="false" data-backdrop="static"  role="dialog">
+            <div id="roundModal" class="modal fade" data-keyboard="false" data-backdrop="static"  role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="row">
                         <div class="col">
                             <div class="modal-content mx-auto">
                                 <div class="modal-header">
-                                    <h5 class="modal-title text-center" id="missionModalHeader">Execute your mission:</h5>
+                                    <h5 class="modal-title text-center" id="roundModalHeader">Pick your card:</h5>
                                 </div>
                                 <div class="modal-body py-2">
                                     <div class="container-fluid">                                           
@@ -293,7 +293,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content mx-auto">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="missionResult"></h5>
+                            <h5 class="modal-title" id="roundResult"></h5>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
                         <div class="modal-body">

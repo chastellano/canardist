@@ -275,32 +275,32 @@ socket.on('idCard', idCard => {
     $('#playerIdentity').append(cardEl);
     $('#blackNum').html('0');
     $('#redNum').html('0');
-    $('#missionNum').html('1');
+    $('#roundNum').html('1');
     $('#scoreboardDiv').fadeIn('slow');
     $('#startGameButt').off('click');
 });
 
 socket.on('turn', (current, name) => {
-    $('#missionButt').off('click');
+    $('#roundButt').off('click');
     current+=1;
     console.log('name: ', name)
     console.log(current);
     const btn = $(`
-        <button id="missionButt" class="btn btn-info col" type="button">Start Mission ${current}</button>
+        <button id="roundButt" class="btn btn-info col" type="button">Start Round ${current}</button>
     `);
     const msg = $(`
         <p class="bg-success text-white staticMsg">It's your turn, ${name}!</p>
     `);
     
-    function missionListen () {
-        $('#missionButt').on('click', function() {
+    function roundListen () {
+        $('#roundButt').on('click', function() {
             console.log('button press!');
             socket.emit('getButtons');
         });
     }
 
     anim(msg, 'staticPush');
-    anim(btn, 'buttonDiv', missionListen);
+    anim(btn, 'buttonDiv', roundListen);
 
 });
 
@@ -317,24 +317,24 @@ socket.on('notTurn', turn => {
 
 socket.on('specialRound', function () {
     const chatMsg = $(`
-    <p class="scrollPush text-center bold enterLeave"><span class="text-danger">WARNING: </span>Mission 4 will only fail if MORE THAN ONE red card is submitted.</p>
+    <p class="scrollPush text-center bold enterLeave"><span class="text-danger">WARNING: </span>Round 4 will only fail if MORE THAN ONE red card is submitted.</p>
     `)
     insertMsg(chatMsg, 'chatBody')
 });
 
-socket.on('propModal', (buttons, mission, max) => {
+socket.on('propModal', (buttons, round, max) => {
     $('#userButts').empty();
     buttons.forEach(function(button) {
         $('#userButts').append(button);
     });
     $('#proposeModal').modal('show');
-    // const current = currentMission + 1;
+    // const current = currentRound + 1;
     
-    const proposal = async (mission, max) => {
+    const proposal = async (round, max) => {
         try {
-            const checked = await checkcheck(mission, max);
+            const checked = await checkcheck(round, max);
             
-            $('#missionButt').off('click');
+            $('#roundButt').off('click');
             const btn = $(`
                 <p class="staticMsg notTurnButt"> . . . </p>
             `);
@@ -349,7 +349,7 @@ socket.on('propModal', (buttons, mission, max) => {
         }
     }
 
-    proposal(mission, max); 
+    proposal(round, max); 
 });
 
 socket.on('voteLabels', (labels, checked, name) => {
@@ -434,10 +434,10 @@ socket.on('votePush', (name, vote) => {
 
 socket.on('votedUp', player => {
     const chatMsg = $(`
-        <p class="text-center scrollPush enterLeave bold">${player}'s mission was approved!</p>
+        <p class="text-center scrollPush enterLeave bold">${player}'s proposal was approved!</p>
     `);
     const msg = $(`
-        <p class="staticMsg bluePush">Mission in progress . . .</p>
+        <p class="staticMsg bluePush">Round in progress . . .</p>
     `);
     insertMsg(chatMsg, 'chatBody');
     anim(msg, 'staticPush');
@@ -445,42 +445,42 @@ socket.on('votedUp', player => {
 
 socket.on('votedDown', player => {
     const chatMsg = $(`
-        <p class="text-center scrollPush enterLeave bold">${player}'s mission was voted down!</p>
+        <p class="text-center scrollPush enterLeave bold">${player}'s proposal was voted down!</p>
     `)
     insertMsg(chatMsg, 'chatBody');
 });
 
-socket.on('missionModal', (missionCards) => {
+socket.on('roundModal', (roundCards) => {
     $('#executeButt').off('click');
-    console.log(missionCards)
+    console.log(roundCards)
     $('#pass').prop('checked', false);
     $('#fail').prop('checked', false);
-    const black = missionCards[0];
-    const red = missionCards[1]
+    const black = roundCards[0];
+    const red = roundCards[1]
     $('#blackCard').attr('src', `${cards[black]}`)
     $('#redCard').attr('src', `${cards[red]}`)
-    $('#missionModal').modal('show');
+    $('#roundModal').modal('show');
     $('#executeButt').on('click', function() {
         console.log('execute pressed')
         if ($('input[name="executeRadio"]:checked').length > 0) {
             const selected = $('input[name="executeRadio"]:checked');
             if (selected.attr('id') === 'pass') {
                 console.log('BLACK: ', black)
-                socket.emit('missionResolve','pass', black);
+                socket.emit('roundResolve','pass', black);
             } else if (selected.attr('id') === 'fail') {
                 console.log('RED: ', red);
-                socket.emit('missionResolve','fail', red);
+                socket.emit('roundResolve','fail', red);
             } else {
                 console.log('Error');
             }
             $('#executeButt').off('click')
-            $('#missionModal').modal('hide');
+            $('#roundModal').modal('hide');
         }
     });
 })
 
-socket.on('fail', (outcomeCards, score, currMission) => {
-    const nextMission = currMission + 1;
+socket.on('fail', (outcomeCards, score, currRound) => {
+    const nextRound = currRound + 1;
     const scoreEl = $(`<span id="redNum">${score}</span>`);
     $('#redNum').fadeOut('slow', function() {
         $(this).remove();
@@ -489,21 +489,21 @@ socket.on('fail', (outcomeCards, score, currMission) => {
     showResult(outcomeCards);
 
     const chatMsg = $(`
-            <p class="text-center scrollPush enterLeave bold">MISSION ${currMission} FAILED! Red Team Scores!</p>
+            <p class="text-center scrollPush enterLeave bold">ROUND ${currRound} FAILED! Red Team Scores!</p>
     `);
-    $('#missionResult').html(`MISSION ${currMission} FAILED!`);
+    $('#roundResult').html(`ROUND ${currRound} FAILED!`);
     insertMsg(chatMsg, 'chatBody');
     
 
-    const nextMissionEl = $(`<span id="missionNum">${nextMission}</span>`)
-    $('#missionNum').fadeOut('slow', function() {
+    const nextRoundEl = $(`<span id="roundNum">${nextRound}</span>`)
+    $('#roundNum').fadeOut('slow', function() {
         $(this).remove();
-        $('#currentScore').append(nextMissionEl.hide().fadeIn('slow'))
+        $('#currentScore').append(nextRoundEl.hide().fadeIn('slow'))
     });
 });
 
-socket.on('pass', (outcomeCards, score, currMission) => {
-    const nextMission = currMission + 1;
+socket.on('pass', (outcomeCards, score, currRound) => {
+    const nextRound = currRound + 1;
     const scoreEl = $(`<span id="blackNum">${score}</span>`);
     $('#blackNum').fadeOut('slow', function() {
         $(this).remove()
@@ -512,15 +512,15 @@ socket.on('pass', (outcomeCards, score, currMission) => {
     showResult(outcomeCards);
 
     const chatMsg = $(`
-            <p class="text-center scrollPush enterLeave bold">MISSION ${currMission} PASSED! Black Team Scores!</p>
+            <p class="text-center scrollPush enterLeave bold">ROUND ${currRound} PASSED! Black Team Scores!</p>
         `);
     insertMsg(chatMsg, 'chatBody');
-    $('#missionResult').html(`MISSION ${currMission} PASSED!`);
+    $('#roundResult').html(`ROUND ${currRound} PASSED!`);
     
-    const nextMissionEl = $(`<span id="missionNum">${nextMission}</span>`)
-    $('#missionNum').fadeOut('slow', function() {
+    const nextRoundEl = $(`<span id="roundNum">${nextRound}</span>`)
+    $('#roundNum').fadeOut('slow', function() {
         $(this).remove();
-        $('#currentScore').append(nextMissionEl.hide().fadeIn('slow'))
+        $('#currentScore').append(nextRoundEl.hide().fadeIn('slow'))
     });
 });
 
@@ -536,7 +536,7 @@ socket.on('winner', (color, outcomeCards, ids) => {
     const msg = $(`
         <p class="text-white staticMsg bg-black bold">${caps} TEAM WINS!!!</p>
     `);
-    $('#missionResult').html(`${caps} TEAM WINS`);
+    $('#roundResult').html(`${caps} TEAM WINS`);
     anim(msg, 'staticPush');
 
     getIdentities(ids)

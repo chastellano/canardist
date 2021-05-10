@@ -38,46 +38,46 @@ function genTeamsTemp(num) {
     return {blacks, reds};
 }
 
-function missionArr(num) {
+function roundArr(num) {
     // numplayers = numPlayers = parseInt(playersInput.value);
-    // missionDeal.innerHTML = '';
-    const missions = []
+    // roundDeal.innerHTML = '';
+    const rounds = []
     switch (num) {
         case 5:
-            missions[0] = 2;
-            missions[1] = 3;
-            missions[2] = 2;
-            missions[3] = 3;
-            missions[4] = 3;
+            rounds[0] = 2;
+            rounds[1] = 3;
+            rounds[2] = 2;
+            rounds[3] = 3;
+            rounds[4] = 3;
             break;
         case 6:
-            missions[0] = 2;
-            missions[1] = 3;
-            missions[2] = 4;
-            missions[3] = 3;
-            missions[4] = 4;
+            rounds[0] = 2;
+            rounds[1] = 3;
+            rounds[2] = 4;
+            rounds[3] = 3;
+            rounds[4] = 4;
             break;
         case 7:
-            missions[0] = 2;
-            missions[1] = 3;
-            missions[2] = 3;
-            missions[3] = 4;//***
-            missions[4] = 4;
+            rounds[0] = 2;
+            rounds[1] = 3;
+            rounds[2] = 3;
+            rounds[3] = 4;//***
+            rounds[4] = 4;
             break;
         case 8:
         case 9:
         case 10:
-            missions[0] = 3;
-            missions[1] = 4;
-            missions[2] = 4;
-            missions[3] = 5;//***
-            missions[4] = 5;
+            rounds[0] = 3;
+            rounds[1] = 4;
+            rounds[2] = 4;
+            rounds[3] = 5;//***
+            rounds[4] = 5;
             break;
         default:
             console.log('Error')
     }
-    // missionDeal.innerHTML = missions.join(', ');
-    return missions;
+    // roundDeal.innerHTML = rounds.join(', ');
+    return rounds;
 }
 
 function shuffle(arr) {
@@ -137,13 +137,13 @@ function populateThings (room, num) {
 
     room['game'].idCards = idCards;
     room['game'].teamsTemp = teamsTemp;
-    room['game'].missions = missionArr(num);
-    room['game'].currentMission = 0;
+    room['game'].rounds = roundArr(num);
+    room['game'].currentRound = 0;
     room['game'].order = shuffle(Object.keys(room['players']));
     room['game'].turn = room['game'].order[0];
     room['game'].next = room['game'].order[1];
-    // room.game.turn = room.game.order[game.currentMission]; //can't just say zeroth?
-    // room.game.next = room.game.order[game.currentMission + 1]; //ditto
+    // room.game.turn = room.game.order[game.currentRound]; //can't just say zeroth?
+    // room.game.next = room.game.order[game.currentRound + 1]; //ditto
     // console.log('148: ' + JSON.stringify(room.game, null, 2));
 
     const cards = room['game'].idCards;
@@ -193,8 +193,8 @@ function populateThings (room, num) {
     // console.log('191: ' + JSON.stringify(room['players'], null, 2));
 }
 
-//accepts number of players going on mission and game deck, returns array of arrays with one black and one red card for each player
-function dealMission (num, deck) {
+//accepts number of players in round and game deck, returns array of arrays with one black and one red card for each player
+function dealRound (num, deck) {
     // console.log('197:   black: ', deck.black.length, ' red: ', deck.red.length);
     const pairArr = [];
     const black = deck.black.slice();
@@ -212,7 +212,7 @@ function dealMission (num, deck) {
 
 module.exports = {
     populateThings: populateThings,
-    dealMission: dealMission,
+    dealRound: dealRound,
     shuffle: shuffle
 }
 

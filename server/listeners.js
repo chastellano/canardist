@@ -1,7 +1,7 @@
 module.exports = io => {
 
     const {rooms, activeIds} = require('./activeRooms');
-    const { dealMission, populateThings, shuffle } = require('./helpers');
+    const { dealRound, populateThings, shuffle } = require('./helpers');
 
     class Game {
         constructor() {
@@ -16,10 +16,10 @@ module.exports = io => {
             this.vote = {},
             this.submissionArr = [],
             this.submissionCards = [],
-            this.missions = [],
+            this.rounds = [],
             this.scoreboard = {},
-            this.currentMission = null,
-            this.missionMax = null
+            this.currentRound = null,
+            this.roundMax = null
         }
     }
 
@@ -159,7 +159,7 @@ module.exports = io => {
 
             const order = rooms[gameId].game.order;
             const turn = rooms[gameId].game.turn;
-            const current = rooms[gameId].game.currentMission;
+            const current = rooms[gameId].game.currentRound;
             order.forEach(player => {
                 const playerSock = rooms[gameId]['players'][player]['socket'];
                 const card = rooms[gameId]['players'][player]['idCard'];
@@ -178,10 +178,10 @@ module.exports = io => {
             for (let player in rooms[gameId]['players']) {
                 buttonArr.push(rooms[gameId]['players'][player]['button']);
             }
-            const currentMission = rooms[gameId]['game']['currentMission'];
-            const missionMax = rooms[gameId]['game']['missions'][currentMission];
+            const currentRound = rooms[gameId]['game']['currentRound'];
+            const roundMax = rooms[gameId]['game']['rounds'][currentRound];
 
-            io.to(sock).emit('propModal', buttonArr, currentMission, missionMax);
+            io.to(sock).emit('propModal', buttonArr, currentRound, roundMax);
         });
 
         socket.on('sendProposal', checked => {
@@ -216,7 +216,7 @@ module.exports = io => {
             const turn = rooms[gameId]['game']['turn'];
             const numPlayers = Object.keys(rooms[gameId]['players']).length;
             const numChecked = rooms[gameId]['game']['checked'].length;
-            const currentMission = rooms[gameId]['game']['currentMission'];
+            const currentRound = rooms[gameId]['game']['currentRound'];
 
             console.log('yeas: ' + yeas.length, ' nays: ' + nays.length, 'needed: ' + numPlayers);
 
@@ -225,15 +225,15 @@ module.exports = io => {
                 if (yeas.length > nays.length) {
                     io.to(gameId).emit('votedUp', turn);
                     console.log(`293 REDS BEFORE: ${rooms[gameId]['game']['deck']['red'].length}, BLACKS BEFORE: ${rooms[gameId]['game']['deck']['black'].length}`)
-                    const missionCards = dealMission(numChecked, rooms[gameId]['game']['deck']);
+                    const roundCards = dealRound(numChecked, rooms[gameId]['game']['deck']);
                     console.log(`295 REDS AFTER: ${rooms[gameId]['game']['deck']['red'].length}, BLACKS AFTER: ${rooms[gameId]['game']['deck']['black'].length}`)
-                    console.log('289: ' + missionCards)
+                    console.log('289: ' + roundCards)
 
                     for (let i = 0; i < numChecked; i++){
                         const player = rooms[gameId]['game']['checked'][i];
                         const playerSock = rooms[gameId]['players'][player]['socket'];
-                        // console.log(missionCards[i]);
-                        io.to(playerSock).emit('missionModal', missionCards[i]);
+                        // console.log(roundCards[i]);
+                        io.to(playerSock).emit('roundModal', roundCards[i]);
                     }
 
                 } else {
@@ -242,11 +242,11 @@ module.exports = io => {
                     const nextSock = rooms[gameId]['players'][nextUp]['socket'];
                     console.log(nextUp + ' IS NEXT');
 
-                    if (currentMission === 3 && numPlayers > 6) {
+                    if (currentRound === 3 && numPlayers > 6) {
                         io.to(gameId).emit('specialRound');
                     }
 
-                    io.to(nextSock).emit('turn', currentMission, nextUp);
+                    io.to(nextSock).emit('turn', currentRound, nextUp);
                     toAllExcept('notTurn', gameId, nextUp, nextUp);
                 }
 
@@ -257,7 +257,7 @@ module.exports = io => {
 
         });
 
-        socket.on('missionResolve', (submission, card) => {
+        socket.on('roundResolve', (submission, card) => {
             console.log('SUBMISSION: ', submission, ' CARD: ', card);
             rooms[gameId]['game']['submissionCards'].push(card);
             rooms[gameId]['game']['submissionArr'].push(submission);
@@ -265,20 +265,20 @@ module.exports = io => {
             const checked = rooms[gameId]['game']['checked'];
             const submissionArr = rooms[gameId]['game']['submissionArr'];
             const submissionCards = rooms[gameId]['game']['submissionCards'];
-            const currentMission = rooms[gameId]['game']['currentMission'];
+            const currentRound = rooms[gameId]['game']['currentRound'];
             const players = Object.keys(rooms[gameId]['players']);
 
             console.log('PLAYERS: ' + checked.length, 'VOTES: ' + submissionArr.length)
             console.log(submissionArr, submissionCards);
 
             if ( submissionArr.length === checked.length ) {
-                console.log(`MISSON # ${currentMission} COMPLETED`);
-                rooms[gameId]['game']['currentMission'] += 1;
-                const nextMission = rooms[gameId]['game']['currentMission'];
-                console.log(`NEXT MISSION IS # ${nextMission}`);
+                console.log(`MISSON # ${currentRound} COMPLETED`);
+                rooms[gameId]['game']['currentRound'] += 1;
+                const nextRound = rooms[gameId]['game']['currentRound'];
+                console.log(`NEXT ROUND IS # ${nextRound}`);
                 shuffle(submissionCards);
 
-                if (currentMission === 3 && players.length > 6) {
+                if (currentRound === 3 && players.length > 6) {
                     const nayVotes = submissionArr.filter(vote => vote === 'fail');
                     console.log('NAYS: ', nayVotes)
                     if (nayVotes.length > 1) {
@@ -288,7 +288,7 @@ module.exports = io => {
                             const idsObj = rooms[gameId]['game']['idsObj'];
                             io.to(gameId).emit('winner', 'red', submissionCards, idsObj);
                         } else {
-                            io.to(gameId).emit('fail', submissionCards, redScore, nextMission);
+                            io.to(gameId).emit('fail', submissionCards, redScore, nextRound);
                         }
                     } else {
                         console.log('FALSE')
@@ -297,7 +297,7 @@ module.exports = io => {
                             const idsObj = rooms[gameId]['game']['idsObj'];
                             io.to(gameId).emit('winner', 'black', submissionCards, idsObj);
                         } else {
-                            io.to(gameId).emit('pass', submissionCards, blackScore, nextMission);
+                            io.to(gameId).emit('pass', submissionCards, blackScore, nextRound);
                         }
                     }
                 } else {
@@ -307,7 +307,7 @@ module.exports = io => {
                             const idsObj = rooms[gameId]['game']['idsObj'];
                             io.to(gameId).emit('winner', 'red', submissionCards, idsObj);
                         } else {
-                            io.to(gameId).emit('fail', submissionCards, redScore, nextMission);
+                            io.to(gameId).emit('fail', submissionCards, redScore, nextRound);
                         }
                     } else {
                         const blackScore = increment('black', gameId);
@@ -315,7 +315,7 @@ module.exports = io => {
                             const idsObj = rooms[gameId]['game']['idsObj'];
                             io.to(gameId).emit('winner', 'black', submissionCards, idsObj);
                         } else {
-                            io.to(gameId).emit('pass', submissionCards, blackScore, nextMission);
+                            io.to(gameId).emit('pass', submissionCards, blackScore, nextRound);
                         }
                     }
                 }
@@ -335,11 +335,11 @@ module.exports = io => {
                     const nextSock = rooms[gameId]['players'][nextUp]['socket'];
                     console.log(nextUp + ' IS NEXT');
 
-                    if (nextMission === 3 && players.length > 6) {
+                    if (nextRound === 3 && players.length > 6) {
                         io.to(gameId).emit('specialRound');
                     }
 
-                    io.to(nextSock).emit('turn', nextMission, nextUp);
+                    io.to(nextSock).emit('turn', nextRound, nextUp);
                     toAllExcept('notTurn', gameId, nextUp, nextUp);
                 }
 
@@ -386,7 +386,7 @@ module.exports = io => {
         }
     }
 
-    //sets Game.turn to next player in Game.order (loops at end), DOES NOT CHANGE GAME.CURRENTMISSION in case mission is voted down
+    //sets Game.turn to next player in Game.order (loops at end), DOES NOT CHANGE GAME.currentRound in case round is voted down
     //returns next player
     function nextTurn (room) {
         const order = rooms[room]['game']['order'];

@@ -53,17 +53,17 @@ export const cards = {
     "ks": "cardsJS/cards/KS.svg"
 }
 
-export function checkcheck (mission, max) {
-    mission+=1;
-    $('#missionPropose').off('click');
-    $('#proposeModalHeader').html(`Choose ${max} people for Mission ${mission}:`)
+export function checkcheck (round, max) {
+    round+=1;
+    $('#roundPropose').off('click');
+    $('#proposeModalHeader').html(`Choose ${max} people for Round ${round}:`)
     return new Promise (function(resolve, reject){
         const checked = [];
         const checkboxArr = $('.checkcheck');
         checkboxArr.off('click');
         console.log(`There are ${checkboxArr.length} players`);
         // console.log($('.checkcheck'));
-        console.log(`Mission: ${mission}, Max: ${max}`);
+        console.log(`Round: ${round}, Max: ${max}`);
         checkboxArr.on('click', function () {
             if (this.checked && (checked.length < max)) {
                 checked.push(this.nextElementSibling.innerHTML);
@@ -78,7 +78,7 @@ export function checkcheck (mission, max) {
                 // console.log(`Checked: ${checked.length}, Max: ${max}`);
             }
         })
-        $('#missionPropose').on('click', function () {
+        $('#roundPropose').on('click', function () {
             if (checked.length === max) {
                 // console.log('success!');
                 checkboxArr.off('click');
@@ -88,7 +88,7 @@ export function checkcheck (mission, max) {
             }
         });
         $('#proposeEsc').on('click', function() {
-            $('#missionPropose').off('click');
+            $('#roundPropose').off('click');
             reject('Player exited proposal window')
         });
     });
