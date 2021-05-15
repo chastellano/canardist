@@ -23,14 +23,16 @@ const server = app.listen(process.env.PORT || 3000, function(){
 //     console.log('Secure server listening on port 3443');
 // });
 
-// app.all('*', (req, res, next) => {
-//     if (req.secure) {
-//         return next();
-//     } else {
-//         console.log(`Redirecting to: https://${req.hostname}:${app.get('secPort')}${req.url}`);
-//         res.redirect(`https://${req.hostname}:${app.get('secPort')}${req.url}`);
-//     }
-// })
+app.all('*', (req, res, next) => {
+    if (req.headers('X-Forwarded-Proto' === 'https') || req.secure) {
+        return next();
+    } else {
+        // console.log(`Redirecting to: https://${req.hostname}:${app.get('secPort')}${req.url}`);
+        // res.redirect(`https://${req.hostname}:${app.get('secPort')}${req.url}`);
+        console.log(`Redirecting to: https://${req.header('host')}${req.url}`);
+        res.redirect(`https://${req.header('host')}${req.url}`);
+    }
+})
 
 
 app.use('/', homeRouter);
