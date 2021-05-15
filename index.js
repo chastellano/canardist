@@ -24,7 +24,7 @@ const server = app.listen(process.env.PORT || 3000, function(){
 // });
 
 app.all('*', (req, res, next) => {
-    if (req.headers('X-Forwarded-Proto' === 'https') || req.secure) {
+    if (req.header('x-forwarded-proto') == 'https' || req.secure) {
         return next();
     } else {
         // console.log(`Redirecting to: https://${req.hostname}:${app.get('secPort')}${req.url}`);
