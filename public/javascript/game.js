@@ -540,10 +540,20 @@ socket.on('winner', (color, outcomeCards, ids) => {
     $('#roundResult').html(`${caps} TEAM WINS`);
     anim(msg, 'staticPush');
 
-    getIdentities(ids)
-    identityReveal();
+    identityReveal(ids);
     return;
 });
+
+
+
+const showResult = arr => {
+    $('#submissionCards').html('');
+    arr.forEach(function(cardId) {
+        const cardImg = `<div><img class="identityCardModal mx-auto" src=${cards[cardId]} /></div>`;
+        $('#submissionCards').append(cardImg);
+    });
+    $('#outcomeModal').modal('show');
+}
 
 //takes identity object as argument, removes client's entry and populates modal that will reveal all player's identities
 const getIdentities = obj => {
@@ -554,24 +564,14 @@ const getIdentities = obj => {
         const identityDiv = document.createElement('div');
         identityDiv.innerHTML = `
             <p class="text-center text-nowrap">${player}</p>
-            <img class="identityCardModal mx-auto" src="cardsJS/cards/${obj[player]}.svg"/>
+            <img class="identityCardModal mx-auto" src=${cards[obj[player]]} />
         `;
         $('#playerIdentities').append(identityDiv);
     }
 };
 
-
-const showResult = arr => {
-    $('#submissionCards').html('');
-
-    arr.forEach(function(cardId) {
-        const cardImg = `<div><img class="identityCardModal mx-auto" src=${cards[cardId]} /></div>`
-        $('#submissionCards').append(cardImg);
-    });
-    $('#outcomeModal').modal('show')
-}
-
-function identityReveal () {
+const identityReveal = async obj => {
+    await getIdentities(obj)
     const btn = $(`
         <button id="revealAll" class="btn btn-success col" type="button">Reveal Identities</button>
     `)
