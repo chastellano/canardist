@@ -12,101 +12,79 @@
     </head>
     <body>
         <div id="mainContainer" class="container mx-auto m-0 p-0 h-100">
-            <div id="joinDiv" class="text-center mt-5" style="display:block">
-                <h2 id="firstHeader" class="text-center mt-5 mb-4">CANARDIST</h2>
-                <button class="btn btn-lg btn-dark mt-3" id="join">Enter</button>
+            <div id="joinDiv" class="text-center" style="display:block">
+                <h2 id="firstHeader" class="text-center mb-4">CANARDIST</h2>
+                <button class="btn btn-lg btn-dark btn-outset mt-3" id="join">Enter</button>
                 <div id="roomFull" class="mt-4" style="display:none">
                     <p class="text-danger">Game is in progress, try another room.</p>
                 </div> 
             </div>
-            <div id="gameBody" class="mx-auto m-0 h-100 col" style="display:none">
+            <div id="gameBody" class="mx-auto m-0 col h-100" style="display:none">
                 <div class="row h-100">
-                    <div id="consoleDiv" class="card mx-auto bg-dark px-1 px-sm-2 px-lg-3 h-100 col-xs-12 col-md-9 col-lg-7 col-xl-6">
-                        <!-- <div class="row p-0 mx-auto m-0"> -->
-                            <!-- <div class="col mx-auto p-0"> -->
-                                <!-- <div class="card m-0 border"> -->
-                                    <div id="headerBanner" class="text-white">
-                                        <div id="chatDropdownDiv" class="btn-group">
-                                            <!-- <a href='#' data-toggle="dropdown"><i class="white fas fa-2x fa-caret-square-down"></i></a> -->
-                                            <a href="#" data-toggle="dropdown"><i class="white fas fa-2x fa-user-circle"></i></a>
-                                            <div id="chatDropdown" class="dropdown-menu dropdown-menu-left">
-                                                <div id="currentPlayers" class="border px-2 dropdown-item-text">
-                                                    <p>Bob</p>
-                                                    <p>Pherka</p>
-                                                    <p>Berka</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h4 id="reload" class="d-inline text-center">CANARDIST</h4>
-                                        </div>
-                                        <div id="shareLinkDiv">
-                                            <a id="copyLink" href='#'><i class="white fas fa-2x fa-share-alt-square"></i></a>
-                                        </div>
+                    <div id="consoleDiv" class="mx-auto bg-dark px-1 px-sm-2 px-lg-3 col-xs-12 col-sm-10 col-md-9 col-lg-7 col-xl-6">
+                        <div id="headerBanner" class="text-white mb-1 pb-1">
+                            <div id="chatDropdownDiv" class="btn-group" data-toggle="tooltip" data-trigger="manual" data-placement="bottom" title="The ROOM button shows all players that are currently in the room.">
+                                <a href="#" data-toggle="dropdown"><i class="white fas fa-2x fa-user-circle"></i></a>
+                                <div id="chatDropdown" class="dropdown-menu dropdown-menu-left">
+                                    <div id="currentPlayers" class="border px-2 dropdown-item-text">
+                                        <p>Player 1</p>
+                                        <p>Player 2</p>
+                                        <p>Player 3</p>
                                     </div>
-                                        
-                                    <div id="consoleBody" class="card-body p-0 mt-0 bg-dark">
-                                        <div id="staticPush" style="position:relative" class="bluePush">
-                                            <!-- <p class="staticMsg bg-danger text-white bold">RED TEAM WINS!!!</p> -->
-                                            <!-- <p class="text-white staticMsg bg-black bold">BLACK TEAM WINS!!!</p> -->
-                                            <!-- <p class="staticMsg bg-success text-white">Click below to vote on the proposal!</p> -->
-                                        </div>
-
-                                        <div id="chatBody" class="text-wrap bg-light">
-                                            <!-- <p class="scrollPush enterLeave text-center">* * * You has joined the room * * *</p> -->
-                                            <!-- <p class="scrollPush text-center enterLeave">* * * ${user} left the room * * *</p> -->
-                                            <!-- <p class="text-center scrollPush bold enterLeave">Booby proposes Babby, Scooby, Hooboo, Doobydoo, Clerberboo. Click below to vote!</p> -->
-                                            
-                                        </div>
-                                        <div id="chatInpDiv" class="input-group input-group-sm mt-1">   
-                                            <input id="chatInput" class="form-control border form-control-sm" type="text" placeholder=" . . . ">
-                                            <div class="input-group-append">
-                                                <button type="button" class="input-group-text" id="chatSend">Send</button>
-                                            </div>
-                                        </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 id="reload" class="d-inline text-center" data-toggle="tooltip" data-trigger="manual" data-placement="bottom" title="The TITLE button ends the current game and returns all players to the room.">CANARDIST</h4>
+                            </div>
+                            <div id="shareLinkDiv" data-toggle="tooltip" data-trigger="manual" data-placement="bottom" title="The SHARE button gives you a shareable link for the room.">
+                                <a id="copyLink" href='#'><i class="white fas fa-2x fa-share-alt-square"></i></a>
+                            </div>
+                        </div>
+                            
+                        <div id="consoleBody" class="card-body p-0 mt-0 bg-dark">
+                            <div id="chatBody" class="text-wrap bg-light">
                                 
-                                        <div id="buttonDiv" style="position:relative" class="notTurnButt">
-                                            <!-- <button class="btn btn-success col" style="position:absolute" id='startGameButt' type='button'>Start Game!</button> -->
-                                            <!-- <button id="propButt" style="position:absolute" class="btn btn-info bold col" type="button">V O T E</button> -->
-                                        </div>
+                            </div>
+                            <div id="chatInpDiv" class="input-group input-group-sm mt-1">   
+                                <input id="chatInput" class="form-control border form-control-sm" type="text" placeholder=" . . . ">
+                                <div class="input-group-append">
+                                    <button type="button" class="input-group-text" id="chatSend">Send</button>
+                                </div>
+                            </div>
+                    
+                            <div id="buttonDiv" style="position:relative" class="notTurnButt" data-toggle="tooltip" data-trigger="manual" data-placement="top" title="The ACTION button appears GREEN when it is clickable or it is your turn." data-animation="true">
+                                <p class="staticMsg notTurnButt"> . . . </p>
+                                <!-- <div id="roundButt" class="bg-success d-flex align-items-center h-100 w-100"><p class="col bold my-auto text-center p-0 text-nowrap">IT'S YOUR TURN - CLICK HERE</p></div> -->
+                            </div>
+                        </div>
+    
+                        <div class="card-footer border-0 px-0 px-sm-2 bg-dark">
+                            <div id="scoreboardDiv" class="container p-0 mt-2" style="display:none">
+                                <div class="row d-flex w-100 mx-auto align-items-center justify-content-around flex-nowrap">
+                                    <div>
+                                        <table id="scoreboard" class="table table-dark" data-toggle="tooltip" data-trigger="manual" data-placement="left" title="The SCOREBOARD shows the score and current round. First to three points wins!" data-animation="true">
+                                            <tbody>
+                                                <tr class="bg-info">
+                                                    <th scope="row" class="text-nowrap">Round</th>
+                                                    <td id="currentScore" class="text-center bold"><span id="roundNum">2</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row" class="text-nowrap">Black Team</th>
+                                                    <td id="blackScore" class="text-center bold"><span id="blackNum">2</span></td>
+                                                </tr>
+                                                <tr class="bg-danger">
+                                                    <th scope="row" class="text-nowrap">Red Team</th>
+                                                    <td id="redScore" class="text-center bold"><span id="redNum">1</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-              
-                                    <div class="card-footer border-0 bg-dark">
-                
-                                        <div class="container p-0 mt-2" id="scoreboardDiv" style="display: none">
-                                            <div class="row d-flex align-items-center">
-                                                <div class="col-6">
-                                                    <table id="scoreboard" class="mx-auto table table-dark">
-                                                        <tbody>
-                                                            <tr>
-                                                                <th scope="row">Black Team</th>
-                                                                <td id="blackScore"><span id="blackNum"></span></td>
-                                                            </tr>
-                                                            <tr class="bg-danger">
-                                                                <th scope="row">Red Team</th>
-                                                                <td id="redScore"><spa id="redNum"></span></td>
-                                                            </tr>
-                                                            <tr class="bg-info">
-                                                                <th scope="row">Round</th>
-                                                                <td id="currentScore"><span id="roundNum"></span></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div class="col-6">
-                                                    <div class="text-center">
-                                                        <!-- <p class="text-white text-center mb-0 text-nowrap"><small>YOUR CARD</small></p> -->
-                                                        <div id="playerIdentity" class="col-12 mx-auto">
-                                                            <img class="identity img-fluid" src="cardsJS/cards/as.svg"/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div> 
+                                    <div id="playerIdentity" class="px-0">
+                                        <img id="idCard" class="identity img-fluid h-100" src="cardsJS/cards/ad.svg" data-toggle="tooltip" data-trigger="manual" data-placement="right" title="Your ID CARD indicates whether you are on the RED or BLACK team." data-animation="true"/>
                                     </div>
-                                <!-- </div> -->
-                            <!-- </div> -->
-                        <!-- </div> -->
+                                </div>
+                            </div> 
+                        </div>
                     </div>
                 </div>
             </div>
@@ -126,7 +104,7 @@
                                             <input type="text" class="form-control" name="nameInput" id="nameInput" maxlength="12">
                                         </div>
                                         <div class="mt-4 text-center">
-                                            <button id="enlistButt" class="btn btn-primary">Join Room</button>
+                                            <button id="enlistButt" class="btn btn-primary btn-outset">Join Room</button>
                                         </div>
                                         <div>
                                             <p id="nameWarning" style="display: none" class="text-danger align-self-center">Someone in the game is already using that name!</p>
@@ -139,11 +117,28 @@
                 </div>
             </div>
 
+            <div id="welcomeModal" class="modal mx-auto fade" data-keyboard="false" data-backdrop="static" role="dialog">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content bg-light mx-auto">
+                        <div class="modal-body pt-3 px-3 pb-0">
+                            <div class="text-center">
+                                <h5>WELCOME!</h5>
+                                <p>If this is your first time playing or you need a refresher, take a quick tour!</p>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0 mt-0">
+                            <button id="takeTourButt" class="col-5 btn btn-success btn-outset mx-auto text-nowrap">Take tour!</button>
+                            <button id="imGoodButt" data-dismiss="modal" class="col-5 btn btn-danger btn-outset mx-auto text-nowrap">I'm good.</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="shareModal" class="modal fade" role="dialog">
                 <div class="modal-dialog modal-sm" role="document">
-                    <div class="modal-content mx-auto">
-                        <div class="modal-body bg-dark">
-                            <h6 class="text-center mb-3 text-white">Invite friends!</h6>
+                    <div class="modal-content bg-dark mx-auto">
+                        <div class="modal-body">
+                            <h5 class="text-center mb-3 text-white">Invite a friend:</h6>
                             <div class="row my-0">
                                <div class="col-11 mx-auto">
                                     <div class="mx-auto">
@@ -153,7 +148,7 @@
                                                     <input id="shareLink" class="form-control form-control-sm" readonly type="url"/> 
                                                 </div>
                                                 <div class="mt-4 text-center">
-                                                    <button id="copyButt" class="btn btn-primary">Copy URL</button>
+                                                    <button id="copyButt" class="btn btn-primary btn-outset">Copy URL</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -165,21 +160,50 @@
                 </div>
             </div>
 
+            <div id="startModal" class="modal mx-auto fade" role="dialog">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content bg-light mx-auto">
+                        <div class="modal-body pt-3 px-3 pb-0">
+                            <div class="text-center">
+                                <p><strong>Are you sure?</strong></p>
+                                <p>Once the game starts, no one else can join the game or enter the room.</p>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0 mt-0">
+                            <button id="readyButt" class="col-5 btn btn-success btn-outset mx-auto">Ready!</button>
+                            <button id="notYetButt" class="col-5 btn btn-danger btn-outset mx-auto text-nowrap">Not yet!</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="reloadModal" class="modal mx-auto fade" data-keyboard="false" data-backdrop="static" role="dialog">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content bg-light mx-auto">
+                        <div class="modal-body pt-3 px-3 pb-0">
+                            <div class="text-center">
+                                <p class="bold">Exit the current game?</p>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0 mt-0">
+                            <button id="okButt" class="col-4 btn btn-success btn-outset mx-auto">OK</button>
+                            <button id="cancelButt" class="col-4 btn btn-danger btn-outset mx-auto text-nowrap">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="identityModal" class="modal fade" role="dialog">
                 <div class="modal-dialog" role="document">
-                    <div class="modal-content mx-auto">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Player Identities</h5>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
-                        <div class="modal-body">
+                    <div class="modal-content bg-light mx-auto pt-3">
+                        <div class="modal-body pb-3">
                             <div id="playerIdentities" class="d-flex col flex-wrap justify-content-around"> 
                                 <div>
-                                    <p class="text-center text-nowrap">Mike</p>
+                                    <p class="text-center text-nowrap">Player 1</p>
                                     <img class='identityCardModal mx-auto' src='cardsJS/cards/AS.svg'>
                                 </div>
                                 <div>
-                                    <p class="text-center">Marla</p>
+                                    <p class="text-center">Player 2</p>
                                     <img class='identityCardModal mx-auto' src='cardsJS/cards/KS.svg'>
                                 </div>
                                 <div class="">
@@ -187,46 +211,67 @@
                                     <img class='identityCardModal mx-auto' src='cardsJS/cards/QS.svg'>
                                 </div>
                                 <div class="">
-                                    <p class="text-center">Name</p>
+                                    <p class="text-center">Player 3</p>
                                     <img class='identityCardModal mx-auto' src='cardsJS/cards/JS.svg'>
                                 </div>
                                 <div>
-                                    <p class="text-center">Gergle</p>
+                                    <p class="text-center">Player 4</p>
+                                    <img class='identityCardModal mx-auto' src='cardsJS/cards/10S.svg'>
+                                </div>
+                                <div>
+                                    <p class="text-center">Player 2</p>
+                                    <img class='identityCardModal mx-auto' src='cardsJS/cards/KS.svg'>
+                                </div>
+                                <div class="">
+                                    <p class="text-center">LongNamePerson</p>
+                                    <img class='identityCardModal mx-auto' src='cardsJS/cards/QS.svg'>
+                                </div>
+                                <div class="">
+                                    <p class="text-center">Player 3</p>
+                                    <img class='identityCardModal mx-auto' src='cardsJS/cards/JS.svg'>
+                                </div>
+                                <div>
+                                    <p class="text-center">Player 4</p>
                                     <img class='identityCardModal mx-auto' src='cardsJS/cards/10S.svg'>
                                 </div>
                             </div>
+                        </div>
+                        <div class="modal-footer border-0 pt-0">
+                            <button data-dismiss="modal" class="btn btn-lg btn-dark btn-outset mx-auto">Close</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="proposeModal" class="modal fade" data-backdrop="static" role="dialog">
+            <div id="proposeModal" class="modal fade" role="dialog">
                 <div class="modal-dialog" role="document">
-                    <div class="modal-content mx-auto">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="proposeModalHeader"></h5>
-                            <button id="proposeEsc" type="button" class="close" data-dismiss="modal">&times;</button>
+                    <div class="modal-content bg-light mx-auto">
+                        <div class="modal-header border-0">
+                            <h6 class="modal-title" id="proposeModalHeader">Choose 2 people for round 2:</h6>
                         </div>
                         <div class="modal-body">
                             <div id="userButts" class="d-flex flex-wrap justify-content-center">
                                 
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="submit" id="roundPropose" class="btn btn-lg btn-dark mx-auto">Submit</button>
+                        <div class="modal-footer border-0">
+                            <button type="submit" id="roundPropose" class=" col-5 btn btn-dark btn-lg btn-outset mx-auto">Submit</button>
+                            <button data-dismiss="modal" class="col-5 btn btn-secondary btn-lg btn-outset mx-auto text-nowrap">Back</button>
                         </div>
+                        <p id="tooFewWarning" style="display: none;" class="proposeWarning text-danger align-self-center"></p>
+                        <p id="tooManyWarning" style="display: none;" class="proposeWarning text-danger align-self-center"></p>
                     </div>
                 </div>
             </div>
 
             <div id="voteModal" class="modal mx-auto fade" data-keyboard="false" data-backdrop="static" role="dialog">
                 <div class="modal-dialog" role="document">
-                    <div class="modal-content mx-auto">
+                    <div class="modal-content bg-light mx-auto">
                         <div class="modal-body pt-4">
                             <div>
                                 <p class="text-center"><strong>Do you approve this proposal?</strong></p>
                             </div>
-                            <div id="proposedPlayers" class="d-flex flex-wrap justify-content-center mb-5">
+                            <div id="proposedPlayers" class="d-flex flex-wrap justify-content-center mb-4">
                                 <div class="userButtDiv">
                                     <label for="test7" class="btn-violet btn-circle" for="">Player 1</label>
                                 </div>
@@ -237,67 +282,61 @@
                                     <label for="test9" class="btn-beige btn-circle" for="">LongNamePers</label>
                                 </div>
                             </div>
-                            <div id="voteButts" class="row m-0">
-                                <div class="col d-flex p-0 justify-content-center">
+                            <div id="voteButts" class="row m-0 d-flex justify-content-around">
+                                <div class="col-4 d-flex p-0 justify-content-center">
                                     <input type="radio" class="hideInput" id="yes" name="voteRound" value="yes">
                                     <label for="yes" id="thumbsUp" class="btn btn-sm btn-outline-success m-0 upDownButts"><i class="far fa-2x fa-thumbs-up"></i></label>
                                 </div>
-                                <div class="col d-flex p-0 justify-content-center">
+                                <div class="col-4 d-flex p-0 justify-content-center">
                                     <input type="radio" class="hideInput" id="no" name="voteRound" value="no">
                                     <label for="no" id="thumbsDown" class="btn btn-sm btn-outline-danger m-0 upDownButts"><i class="far fa-2x fa-thumbs-down fa-flip-horizontal"></i></label>
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer mt-0">
-                            <button id="voteSubmit" class="btn btn-lg btn-dark mx-auto">Submit</button>
+                        <div class="modal-footer border-0 mt-0">
+                            <button id="voteSubmit" class="btn btn-lg btn-dark btn-outset mx-auto">Submit</button>
                         </div>
                             <p id="voteWarning" style="display: none;" class="text-danger align-self-center">You must vote yes or no</p>
                     </div>
                 </div>
             </div>
 
-            <div id="roundModal" class="modal fade" data-keyboard="false" data-backdrop="static"  role="dialog">
+            <div id="roundModal" class="modal fade" data-keyboard="false" data-backdrop="static" role="dialog">
                 <div class="modal-dialog" role="document">
-                    <div class="row">
-                        <div class="col mx-auto">
-                            <div class="modal-content mx-auto">
-                                <div class="modal-header">
-                                    <h5 class="modal-title text-center" id="roundModalHeader">Pick your card:</h5>
-                                </div>
-                                <div class="modal-body py-2">
-                                    <div class="container-fluid">                                           
-                                        <div id="passFailButts" class="row d-flex flex-nowrap py-3 px-2">
-                                            <div class="col d-flex justify-content-center">
-                                                <input type="radio" class="hideInput" id="pass" name="executeRadio" value="pass">
-                                                <label for="pass" class="btn p-0"><img class="passFail img-fluid" id="blackCard" src="cardsJS/cards/KS.svg"/></label>
-                                            </div>
-                                            <div class="col d-flex justify-content-center">
-                                                <input type="radio" class="hideInput" id="fail" name="executeRadio" value="fail">
-                                                <label for="fail" class="btn border p-0"><img class="passFail img-fluid" id="redCard" src="cardsJS/cards/KD.svg"/></label>
-                                            </div>
-                                        </div>
-                                        
+                    <div class="modal-content bg-light mx-auto">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title text-center" id="roundModalHeader">Pick your card:</h5>
+                        </div>
+                        <div class="modal-body py-2">
+                            <div class="container-fluid">                                           
+                                <div id="passFailButts" class="row d-flex flex-nowrap py-3 px-2">
+                                    <div class="col d-flex justify-content-center">
+                                        <input type="radio" class="hideInput" id="pass" name="executeRadio" value="pass">
+                                        <label for="pass" class="btn p-0"><img class="passFail img-fluid" id="blackCard" src="cardsJS/cards/KS.svg"/></label>
+                                    </div>
+                                    <div class="col d-flex justify-content-center">
+                                        <input type="radio" class="hideInput" id="fail" name="executeRadio" value="fail">
+                                        <label for="fail" class="btn border p-0"><img class="passFail img-fluid" id="redCard" src="cardsJS/cards/KD.svg"/></label>
                                     </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="submit" id="executeButt" class="btn btn-lg btn-dark mx-auto">Submit</button>
-                                </div>
-                                <p id="executeWarning" style="display: none;" class="text-danger align-self-center">You must select black (pass) or red (fail)</p>
+                                
                             </div>
-
                         </div>
+                        <div class="modal-footer border-0">
+                            <button type="submit" id="executeButt" class="btn btn-lg btn-dark btn-outset mx-auto">Submit</button>
+                        </div>
+                        <p id="executeWarning" style="display: none;" class="text-danger align-self-center">You MUST choose a card</p>
                     </div>
                 </div>
             </div>
 
             <div id="outcomeModal" class="modal fade" role="dialog">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content mx-auto">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="roundResult"></h5>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <div class="modal-dialog mx-auto" role="document">
+                    <div class="modal-content bg-light mx-auto">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title bold" id="roundResult">BLACK TEAM SCORES!</h5>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body pb-0">
                             <div id="submissionCards" class="d-flex mx-auto flex-wrap p-1 justify-content-center"> 
                                 <div>
                                     <img class='identityCardModal mx-auto' src='cardsJS/cards/AS.svg'>
@@ -305,7 +344,7 @@
                                 <div>
                                     <img class='identityCardModal mx-auto' src='cardsJS/cards/KS.svg'>
                                 </div>
-                                <!-- <div>
+                                <div>
                                     <img class='identityCardModal mx-auto' src='cardsJS/cards/QS.svg'>
                                 </div>
                                 <div>
@@ -313,13 +352,49 @@
                                 </div>
                                 <div>
                                     <img class='identityCardModal mx-auto' src='cardsJS/cards/10S.svg'>
-                                </div> -->
+                                </div>
                             </div>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button data-dismiss="modal" class="btn btn-lg btn-dark btn-outset mx-auto">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="winnerModal" class="modal fade" data-keyboard="false" data-backdrop="static" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content bg-light mx-auto">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title bold" id="winnerTitle">BLACK TEAM WINS!</h5>
+                        </div>
+                        <div class="modal-body pt-1 pb-0">
+                            <div id="winnerCards" class="d-flex mx-auto flex-wrap p-2 justify-content-center"> 
+                                <div>
+                                    <img class='identityCardModal mx-auto' src='cardsJS/cards/AS.svg'>
+                                </div>
+                                <div>
+                                    <img class='identityCardModal mx-auto' src='cardsJS/cards/KS.svg'>
+                                </div>
+                                <div>
+                                    <img class='identityCardModal mx-auto' src='cardsJS/cards/QS.svg'>
+                                </div>
+                                <div>
+                                    <img class='identityCardModal mx-auto' src='cardsJS/cards/JS.svg'>
+                                </div>
+                                <div>
+                                    <img class='identityCardModal mx-auto' src='cardsJS/cards/10S.svg'>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0 pt-0 mt-0">
+                            <button id="revealButt" class="btn btn-success btn-outset mx-auto">Reveal Player Cards</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
 
         <!-- build:js js/main.js -->
         <script src="./javascript/socket.io/client-dist/socket.io.js"></script>

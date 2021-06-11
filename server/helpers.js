@@ -142,9 +142,6 @@ function populateThings (room, num) {
     room['game'].order = shuffle(Object.keys(room['players']));
     room['game'].turn = room['game'].order[0];
     room['game'].next = room['game'].order[1];
-    // room.game.turn = room.game.order[game.currentRound]; //can't just say zeroth?
-    // room.game.next = room.game.order[game.currentRound + 1]; //ditto
-    // console.log('148: ' + JSON.stringify(room.game, null, 2));
 
     const cards = room['game'].idCards;
     const colorArr = buttColors.slice(0, num);

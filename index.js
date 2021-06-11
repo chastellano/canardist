@@ -24,6 +24,9 @@ const server = app.listen(process.env.PORT || 3000, function(){
 // });
 
 app.all('*', (req, res, next) => {
+    if (req.header('host') == 'localhost:3000') {
+        return next();
+    }
     if (req.header('x-forwarded-proto') == 'https' || req.secure) {
         return next();
     } else {

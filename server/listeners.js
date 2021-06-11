@@ -2,6 +2,7 @@ module.exports = io => {
 
     const {rooms, activeIds} = require('./activeRooms');
     const { dealRound, populateThings, shuffle } = require('./helpers');
+    let starts = 0;
 
     class Game {
         constructor() {
@@ -78,27 +79,32 @@ module.exports = io => {
                     console.log('DUPLICATE');
 
                 } else {
-                    socket.join(gameId);
-                    rooms[gameId]['players'][name] = new Player(name, sock);
                     handle = name;
-                    const players = Object.keys(rooms[gameId]['players']);
-                    io.to(sock).emit('addPlayer', players, players.length, name);
-                    io.to(sock).emit('revealStart', name);
-                    toAllExcept('updatePlayer', gameId, [name, players.length], name);
-                    console.log(`There are ${players.length} players in ${gameId}`, rooms);
-                    console.log( `There are ${activeIds.length} active rooms: ${activeIds}`);
-                    console.log('PLAYER CREATED');
-                    return;
+                    io.to(sock).emit('tour', handle);
                 }
                 
             } else {
                 io.to(sock).emit('available', false, false);
             }
-
+            
             // console.log(rooms[gameId]['players']);
+        });
+        
+        socket.on('letMeIn', () => {
+            socket.join(gameId);
+            rooms[gameId]['players'][handle] = new Player(handle, sock);
+            
+            const players = Object.keys(rooms[gameId]['players']);
+            io.to(sock).emit('addPlayer', players, players.length, handle);
+            toAllExcept('updatePlayer', gameId, [handle, players.length], handle);
+            console.log(`There are ${players.length} players in ${gameId}`, rooms);
+            console.log( `There are ${activeIds.length} active rooms: ${activeIds}`);
+            console.log('PLAYER CREATED');
+            return;
         });
 
         socket.on('disconnect', () => {
+            starts = 0
             if (!handle) {
                 return;
             }
@@ -130,48 +136,65 @@ module.exports = io => {
         
             if (rooms[gameId] && rooms[gameId]['game']) {
                 rooms[gameId]['game'] = null;
-                //notification that game ended because someone left
             } 
             
             console.log(`Player ${sock} has left ${gameId}`)
         });
 
-        socket.on('chatSend', (handle, msg) => {
-            // console.log(sock)
-            io.to(gameId).emit('chatRcv', [handle, msg]);
+        socket.on('chatSend', (msg, onTour) => {
+            if (onTour) {
+                io.to(sock).emit('chatRcv', [handle, msg]);
+            } else {
+                io.to(gameId).emit('chatRcv', [handle, msg]);
+            }
         });
+
+        socket.on('checkReload', () => {
+            if (rooms[gameId] && rooms[gameId]['game']) {
+                console.log('TRUE')
+                io.to(sock).emit('showReloadModal');
+            }
+        })
 
         socket.on('reload', function () {
             if (rooms[gameId] && rooms[gameId]['game']) {
                 rooms[gameId]['game'] = null;
+                const num = Object.keys(rooms[gameId]['players']).length;
+                io.to(gameId).emit('breakout', num, handle)
+            } else {
+                return;
             }
-            const num = Object.keys(rooms[gameId]['players']).length;
-            io.to(gameId).emit('breakout', num)
         });
 
         socket.on('startGame', () => {
-            if (rooms[gameId].game) {
+            starts += 1
+            const players = Object.keys(rooms[gameId]['players']);
+            console.log(`STARTS: ${starts}, PLAYERS: ${players.length}`)
+
+            if (starts === players.length){
+                starts = 0;
+                rooms[gameId]['game'] = new Game()
+                populateThings(rooms[gameId], players.length);
+    
+                const order = rooms[gameId].game.order;
+                const turn = rooms[gameId].game.turn;
+                const current = rooms[gameId].game.currentRound;
+                order.forEach(player => {
+                    const playerSock = rooms[gameId]['players'][player]['socket'];
+                    const card = rooms[gameId]['players'][player]['idCard'];
+                    // console.log(`182: ${rooms[gameId]['game']}`)
+                    io.to(playerSock).emit('idCard', card, rooms[gameId]['game']['teamsTemp']['reds'])
+                    if (player === turn) {
+                        io.to(playerSock).emit('turn', current, player);
+                        console.log('180: current = ', current);
+                    } else {
+                        io.to(playerSock).emit('notTurn', turn);
+                    }
+                });
+            } else {
                 return;
             }
 
-            rooms[gameId]['game'] = new Game()
-            const players = Object.keys(rooms[gameId]['players']);
-            populateThings(rooms[gameId], players.length);
-
-            const order = rooms[gameId].game.order;
-            const turn = rooms[gameId].game.turn;
-            const current = rooms[gameId].game.currentRound;
-            order.forEach(player => {
-                const playerSock = rooms[gameId]['players'][player]['socket'];
-                const card = rooms[gameId]['players'][player]['idCard'];
-                io.to(playerSock).emit('idCard', card)
-                if (player === turn) {
-                    io.to(playerSock).emit('turn', current, player);
-                    console.log('current = ', current);
-                } else {
-                    io.to(playerSock).emit('notTurn', turn);
-                }
-            });
         });
 
         socket.on('getButtons', () => {
@@ -322,9 +345,9 @@ module.exports = io => {
                 }
 
                 console.log(`CURRENT SCORE: ${JSON.stringify(rooms[gameId]['game']['scoreboard'], null, 2)}`);
-
+                
+                //need? can set game to null after each 'winner' event
                 if (rooms[gameId]['game']['scoreboard']['black'] > 2 || rooms[gameId]['game']['scoreboard']['red'] > 2) {
-                    console.log('We have a winner!');
                     rooms[gameId]['game'] = null;
                     
                 } else {
@@ -332,22 +355,37 @@ module.exports = io => {
                     rooms[gameId]['game']['submissionCards'] = [];
                     rooms[gameId]['game']['submissionArr'] = [];
 
-                    const nextUp = nextTurn(gameId);
-                    const nextSock = rooms[gameId]['players'][nextUp]['socket'];
-                    console.log(nextUp + ' IS NEXT');
+                    nextTurn(gameId);
 
                     if (nextRound === 3 && players.length > 6) {
                         io.to(gameId).emit('specialRound');
                     }
-
-                    io.to(nextSock).emit('turn', nextRound, nextUp);
-                    toAllExcept('notTurn', gameId, nextUp, nextUp);
                 }
 
             } else {
                 console.log('Votes are still coming in . . .')
             }
         });
+
+        socket.on('cueNextTurn', () => {
+            if (!rooms[gameId]['game']) {
+                return;
+            }
+            const nextRound = rooms[gameId]['game']['currentRound'];
+            const nextUp = rooms[gameId]['game']['turn']
+            const nextSock = rooms[gameId]['players'][nextUp]['socket'];
+            
+            if (socket.id === nextSock) {
+                io.to(socket.id).emit('turn', nextRound, nextUp)
+            } else {
+                io.to(socket.id).emit('notTurn', nextUp);
+            }
+        })
+
+        socket.on('exitGame', () => {
+            const num = Object.keys(rooms[gameId]['players']).length;
+            io.to(socket.id).emit('returnToRoom', num)
+        })
     });
 
     //checks if there is a room with id: gameId and if Game object has been generated
@@ -387,7 +425,7 @@ module.exports = io => {
         }
     }
 
-    //sets Game.turn to next player in Game.order (loops at end), DOES NOT CHANGE GAME.currentRound in case round is voted down
+    //sets Game.turn to next player in Game.order (loops at end), DOES NOT CHANGE Game.currentRound in case round is voted down
     //returns next player
     function nextTurn (room) {
         const order = rooms[room]['game']['order'];

@@ -56,14 +56,15 @@ export const cards = {
 export function checkcheck (round, max) {
     round+=1;
     $('#roundPropose').off('click');
+    $('.proposeWarning').css('display', 'none');
     $('#proposeModalHeader').html(`Choose ${max} people for Round ${round}:`)
     return new Promise (function(resolve, reject){
         const checked = [];
         const checkboxArr = $('.checkcheck');
         checkboxArr.off('click');
-        console.log(`There are ${checkboxArr.length} players`);
+        // console.log(`There are ${checkboxArr.length} players`);
         // console.log($('.checkcheck'));
-        console.log(`Round: ${round}, Max: ${max}`);
+        // console.log(`Round: ${round}, Max: ${max}`);
         checkboxArr.on('click', function () {
             if (this.checked && (checked.length < max)) {
                 checked.push(this.nextElementSibling.innerHTML);
@@ -71,7 +72,12 @@ export function checkcheck (round, max) {
             } else if (this.checked && (checked.length === max)) {
                 this.checked = false;
                 // console.log(`Checked: ${checked.length}, Max: ${max}`);
-                $('#proposeModalHeader').html(`You can <strong class='text-danger'>ONLY</strong> choose ${max} people:`);
+                $('.proposeWarning').css('display', 'none');
+                $('#tooManyWarning').html(`You can ONLY choose ${max} people`);
+                $('#tooManyWarning').css('display', 'block');
+                $('#proposeModal').animate({
+                    scrollTop: `${$('#proposeModal').prop('scrollHeight')}`
+                });
             } else if (!this.checked) {
                 const index = checked.indexOf(this.nextElementSibling.innerHTML)
                 checked.splice(index, 1);
@@ -84,7 +90,12 @@ export function checkcheck (round, max) {
                 checkboxArr.off('click');
                 resolve(checked);
             } else {
-                $('#proposeModalHeader').html(`You <strong class='text-danger'>MUST</strong> choose ${max} people:`);
+                $('.proposeWarning').css('display', 'none');
+                $('#tooFewWarning').html(`You MUST choose ${max} people`);
+                $('#tooFewWarning').css('display', 'block');
+                $('#proposeModal').animate({
+                    scrollTop: `${$('#proposeModal').prop('scrollHeight')}`
+                });
             }
         });
         $('#proposeEsc').on('click', function() {
@@ -95,13 +106,14 @@ export function checkcheck (round, max) {
 }
 
 
-// pass new child, and parent to append to. check to see if parent has same color class.
-// if not, animate color of parent, then fade in new message
+//first argument is new child element, second is parent element to append child
+
 export function anim (newEl, el, listener = null) {
     const parent = '#' + el
-    
+
     //checks if el has any child nodes, fades in child if not, applies listener
     if ($(parent).children().length === 0) {
+        // $(parent).css(`background-color, ${newEl.css('background-color')}`).fadeIn(1000);
         $(parent).append(newEl.hide().delay(400).fadeIn(1000, function() {
             if(listener) {
                 listener();
@@ -109,25 +121,29 @@ export function anim (newEl, el, listener = null) {
         }));
 
     } else {
+        if ($('.action').is(':animated').length > 0) { //stops any currently running action button animations
+            $('.action').finish();
+        }
+
         //grabs all children
         const oldEl = $(parent).find('*');
 
-        //compare content of old and new children, escapes function if they are the same and no listener is passed
+        //compare content of old and new children, returns if they are the same and no listener is passed
         const oldContent = oldEl.eq(0).html();
         const newContent = newEl.html();
         // console.log('OLD: ' + oldContent)
         // console.log('NEW: ' + newContent)
         if (!listener && oldContent === newContent) {
-            console.log('same html, no listener')
+            // console.log('same html, no listener')
         } else {
-            //appends but hides new child, applies listener, captures css bg color in variable
+            //appends but hides new child, captures css bg color in variable
             $(parent).append(newEl.hide());
             
             const oldColor = $(oldEl).css('background-color')
             const newColor = newEl.css('background-color');
 
             //if new (hidden) child and old child have same bg, visible child is faded out
-            //and new child is faded in
+            //and new child is faded in, applies listener
             if (newColor === oldColor) {
                 // console.log('same bg!')
                 $(oldEl).fadeOut(400, function () {
@@ -142,6 +158,7 @@ export function anim (newEl, el, listener = null) {
             //if bgs are different, changes bg of parent behind old child to new child's bg color
             //fades out current child, fades in new child, applies listener
             } else {
+                // console.log('different bgs!')
                 $(parent).css('background-color', newColor);
                 // console.log('Parent bg is now: ', $(parent).css('background-color'));
                 $(oldEl).fadeOut(600, function () {
@@ -162,6 +179,7 @@ export function anim (newEl, el, listener = null) {
 export function insertMsg (msg, el) {
     el = '#' + el
     const check = ($(el)[0].scrollHeight - ($(el)[0].scrollTop + $(el)[0].offsetHeight) <= 2);
+
     $(el).append(msg.hide().fadeIn('slow'));
     if(check) {
         $(el)[0].scrollTop = $(el)[0].scrollHeight;

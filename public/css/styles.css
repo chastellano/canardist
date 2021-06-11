@@ -2,38 +2,88 @@ html {
     margin:0;
     padding:0;
     height: 100%;
+    /* border: 2px solid red; */
+    overflow: hidden;
 }
 
 body {
-    min-height: 100%;
-    /* border: 5px solid red; */
-    background-color: #beb4a8;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #b4aa9d;
+    /* border: 2px solid green; */
+    overflow: hidden;
 }
 
 .white {
     color: white;
 }
 
+#joinDiv {
+    position: relative;
+    top: 15%;
+}
+
+#consoleDiv {
+    height: 100%;
+    border-radius: 1%;
+    overflow: auto;
+}
+
+#nameModal .modal-dialog, #welcomeModal .modal-dialog, #shareModal .modal-dialog, #startModal .modal-dialog, #reloadModal .modal-dialog {
+    position: relative;
+    top: 10%;
+}
+
 .container {
     width: 100;
 }
 
+#rulesModal button {
+    min-width: 70px;
+}
+
 #nameInput, #shareLink {
     border: 4px inset grey;
+    text-align: center;
 }
 
 #nameInput:focus, #shareLink:focus, .close:focus {
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(153, 152, 152, 0.6);
 }
 
-#enlistButt, #copyButt {
-    border: 2px outset grey;
+.btn-outset {
+    border: 3px outset rgb(145, 145, 145);
+    border-radius: 8px;
+}
+
+.bg-light {
+    background-color: rgb(248, 243, 232);
 }
 
 #nameWarning {
     margin: 7px 0px 0px 0px;
     text-align: center;
     font-size: .8em;
+}
+
+.tooltip > .tooltip-inner {
+    background-color: black;
+    color: #FFFFFF;
+    padding: .8em;
+    box-shadow: 1px 2px 6px 2px rgb(65, 64, 64);
+    border-radius: 20px;
+}
+
+.tooltip.show {
+    opacity: 1;
+}
+
+.tooltip {
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 600ms;
+    transition-delay: 100ms;
 }
 
 .identity {
@@ -45,8 +95,40 @@ body {
     background:rgb(98, 209, 253)
 }
 
-.modal-header, .modal-footer {
-    background-color: rgb(248, 246, 241);
+#reloadModal, #chatDropdown, #shareModal {
+    z-index: 100000000;
+}
+
+#titleDiv {
+    border-bottom: .5px solid black;
+    height: auto;
+}
+
+#modalTitleDiv {
+    padding: 0 0 1em 0;
+    border-bottom: .5px solid black;
+}
+
+#titleDiv p {
+    font-size: .8em;
+}
+
+#rulesModal {
+    /* margin: 0 2; */
+    min-width: 17em;
+}
+
+#rulesModal p {
+    text-align: justify;
+    font-weight: 500;
+    font-size: .8em;
+    margin: 1.5em 0 1.5em 0;
+}
+
+#introDiv {
+    text-align: justify;
+    padding: 0 1em 0 1em;
+    font-weight: 400;
 }
 
 .modal-header {
@@ -58,8 +140,12 @@ body {
     max-width: 20em;
 }
 
-#proposeModal .modal-content, #voteModal .modal-content, #outcomeModal .modal-content, #roundModal .modal-content {
+#proposeModal .modal-content, #voteModal .modal-content, #outcomeModal .modal-content, #roundModal .modal-content, #winnerModal .modal-content, #welcomeModal .modal-content, #startModal .modal-content {
     max-width: 23em;
+}
+
+#proposeModal .modal-title {
+    font-size: 1.05em;
 }
 
 .modal, .modal-title {
@@ -86,6 +172,10 @@ body {
     filter: drop-shadow(-1px 2px 10px #333);
 }
 
+.modal {
+    overflow-y: auto;
+}
+
 .identityCardModal {
     width: 60px;
     display: block;
@@ -101,7 +191,7 @@ body {
     text-overflow: ellipsis;
 }
 
-#playerIdentities div, #submissionCards div {
+#playerIdentities div, #submissionCards div, #winnerCards div {
     margin-right: .3em;
     margin-left: .3em;
     margin-bottom: 1.5em;
@@ -161,12 +251,13 @@ body {
 }
 
 .fa-thumbs-up, .fa-thumbs-down {
-    width: 4em;
+    /* width: 4em; */
     padding: 3px;
 }
 
 .upDownButts {
     margin: 0 1em 0 1em;
+    min-width: 8em;
 }
 
 #yes:not(:checked)+label, #no:not(:checked)+label {
@@ -228,7 +319,10 @@ body {
 #consoleHeader {
     padding: .4em 0 0 0;
     height: 3em;
-    /* border: 1px solid white; */
+}
+
+table {
+    max-width: 15em;
 }
 
 #headerBanner {
@@ -237,15 +331,12 @@ body {
     justify-content: center;
     padding: .7em 0 0 0;
     margin: 0 0 0 0;
-    /* margin: .2em 0em .7em 0em; */
-    /* border: 1px solid white; */
 }
 
 #consoleBody {
-    height: 25em;
-    min-height: 17em;
-    max-height: 30em;
-    /* border: 3px solid red; */
+    height: 55%;
+    min-height: 250px;
+    max-height: 400px;
     display: flex;
     flex-direction: column;
 }
@@ -280,6 +371,17 @@ body {
     padding: 1px 8px;
 }
 
+.scrollPush {
+    font-style: italic;
+    font-size: 1em;
+    color: rgba(0,0,0,0.7);
+    line-height: 1.8em;
+}
+
+.chatMargin {
+    margin-top: .3em;
+}
+
 #chatBody {
     height: 100%;
     overflow-y: scroll;
@@ -293,18 +395,6 @@ body {
     border: 4px inset grey;
     border-radius: 6px;
     /* margin: 0 .7em 0 .7em; */
-}
-
-#staticPush {
-    height: 45px;
-    flex-shrink: 0;
-    margin: .7em .7em .7em .7em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 4px inset grey;
-    border-radius: 6px;
-    overflow: hidden;
 }
 
 #chatInput:focus, #chatSend:focus {
@@ -346,13 +436,6 @@ body {
     position: absolute;
 }
 
-.scrollPush {
-    font-style: italic;
-    font-size: 1em;
-    color: rgba(0,0,0,0.7);
-    line-height: 1.8em;
-}
-
 .redPush {
     background-color: #d9534f;
     color: white;
@@ -379,7 +462,7 @@ body {
 }
 
 .enterLeave {
-    background-color: rgb(231, 233, 232);
+    background-color: rgb(199, 199, 199);
 }
 
 .bold {
@@ -396,8 +479,7 @@ body {
 }
 
 #scoreboard {
-    max-width: 200px;
-    min-width: 150px;
+    margin: 0;
 }
 
 .btn-green {

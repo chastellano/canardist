@@ -5,6 +5,8 @@ const goButt = document.getElementById('goButt');
 const pathInp = document.getElementById('pathInp');
 const idWarning = document.getElementById('idWarning');
 const charWarning = document.getElementById('charWarning');
+const rulesButt = document.getElementById('rulesButt');
+const rulesModal = document.getElementById('rulesModal');
 
 // const re = /[^\w\s_-]/ //matches letters, numbers, whitespace, _ and -
 
@@ -13,6 +15,10 @@ pathInp.addEventListener('keyup', e => {
         goButt.click();
     }
 });
+
+rulesButt.addEventListener('click', () => {
+    $('#rulesModal').modal('show');
+})
 
 
 goButt.addEventListener('click', () => {
