@@ -249,9 +249,6 @@ $(document).ready(function() {
     
     const tour = () => {
         onTour = true;
-        $('#chatInp').on('click', (e) => {
-            e.preventDefault();
-        })
         $('[data-toggle="tooltip"]').tooltip();
         $('#welcomeModal').modal('hide');
     
@@ -413,7 +410,6 @@ $(document).ready(function() {
     }
     
     socket.on('addPlayer', (players, num, name) => {
-        $('#chatInput').focus();
         $('#buttonDiv').off('click');
         if (!handle) {
             handle = name;
