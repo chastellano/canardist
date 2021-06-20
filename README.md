@@ -6,7 +6,7 @@ At its core, the game is about bluffing and reading people. Players are anonymou
 
 In each round, players anonymously submit cards through a secret ballot. As the outcome of each round is revealed, players must piece together who is on which team. Players on the black team are trying to figure out which players on the red team. Red team players are trying to convince everyone they are on the black team.
 
-The primary technologies used in this game are Bootstrap, jQuery, & Pug on the front end; and socket.io & express on the back end. The playing cards are rendered using a library called [cardsJS](https://www.npmjs.com/package/cardsJS).
+The game was developed with Bootstrap, jQuery, & Pug on the front end; and Socket.io & Express on the back end. The playing cards are rendered with a library called [CardsJS](https://www.npmjs.com/package/cardsJS).
 <br><br><br>
 
 
