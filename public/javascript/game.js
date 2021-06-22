@@ -2,6 +2,8 @@ import baseUrl from './baseUrl.js'
 const socket = io.connect(baseUrl);
 import { anim, cards, checkcheck, insertMsg } from './helpers.js';
 
+$("meta[property='og:url']").attr("content", window.location.href);
+
 let onTour;
 let currentPlayers = {};
 let handle = '';
@@ -479,6 +481,10 @@ $(document).ready(function() {
         $('#scoreboardDiv').fadeOut('slow');
         $('.modal').modal('hide');
         let msg, btn;
+
+        const test = $(`
+            <p class="action staticMsg notTurnButt"> . . . </p>
+        `)
     
         switch(true) {
     
@@ -490,6 +496,7 @@ $(document).ready(function() {
                 btn = $(`
                     <p class="action redPush staticMsg">4 more players needed to play</p>
                 `)
+                // anim(test, 'buttonDiv');
                 anim(btn, 'buttonDiv');
                 break;
     
@@ -500,6 +507,7 @@ $(document).ready(function() {
                 btn = $(`
                     <p class="action staticMsg redPush">${n} more ${x} needed to start</p>
                 `);
+                // anim(test, 'buttonDiv');
                 anim(btn, 'buttonDiv');
                 break;
     
@@ -517,6 +525,7 @@ $(document).ready(function() {
                             const btn = $(`
                                 <p class="staticMsg notTurnButt">Waiting for all players to join . . . </p>
                             `);
+                            // anim(test, 'buttonDiv');
                             anim(btn, 'buttonDiv');
                         })
                         $('#notYetButt').on('click', () => {
@@ -529,7 +538,7 @@ $(document).ready(function() {
                         $('#startModal').modal('show');
                     });
                 }
-                
+                // anim(test, 'buttonDiv');
                 anim(btn, 'buttonDiv', startListen);
                 break;
             
@@ -537,6 +546,7 @@ $(document).ready(function() {
                 btn = $(`
                     <p class="action staticMsg redPush">There are ${num - 10} too many players to start</p>
                 `)
+                // anim(test, 'buttonDiv');
                 anim(btn, 'buttonDiv');
                 break;
             
@@ -627,7 +637,7 @@ $(document).ready(function() {
                 $('#yourTurn').css('display', 'none');
                 socket.emit('sendProposal', checked);
             } catch (error) {
-                // console.log(error)
+                console.log(error)
             }
         }
     
