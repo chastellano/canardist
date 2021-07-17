@@ -12,17 +12,16 @@ The game was developed with Bootstrap, jQuery, & Pug on the front end; and Socke
 
 ## Gameplay
 
-The landing page provides a randomly generated ID to link other people to the game. You can also create your own custom ID. A short explanation of the rules can also be found here. Once the user navigates to the room and enters their name, they can take a brief tour of the dashboard if it's their first time playing.
+The landing page provides a randomly generated ID to link other people to the game. Users can also create a custom ID for their game. A short explanation of the rules can also be found here. Once the user enters the room, they are offered a brief tour of the dashboard if it's their first time playing.
 
 ![landing](https://user-images.githubusercontent.com/73765884/121802244-65d28700-cc09-11eb-9bac-4ea412883f89.png)
 ![finishTour](https://user-images.githubusercontent.com/73765884/121802249-666b1d80-cc09-11eb-8fa8-9f13d2cad3a6.png)
 <br><br><br>
 
-Once there are 5-10 people in the room, the action button will turn green indicating that a new game can start.
+Once there are 5-10 people in a room, the action button will turn green indicating that a new game can start. Multiplayer gameplay can also be simulated by navigating to the same room in different browser tabs.
 
 ![joinNewGame](https://user-images.githubusercontent.com/73765884/121802242-65d28700-cc09-11eb-97c5-7e5a2f2777cf.png)
 <br><br><br>
-
 
 While the strategy is best understood by playing through a couple rounds, the gameplay itself is fairly self-explanatory. Whenever an action is required of a player, they are either prompted through a push notification or the action button will appear green. Notifications will also appear in the chat during the game.
 
