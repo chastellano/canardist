@@ -19,11 +19,6 @@ $(document).ready(function() {
         socket.emit('knock');
     });
     
-    // $(function() {
-    //     const h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-    //     $("html, body").css({"height":h});
-    // });
-    
     $(window).resize(() => {
         if ($(window).width() < 576 && $('#gameBody').css('display') !== 'none') {
             $('body').addClass('bg-dark');
@@ -47,7 +42,6 @@ $(document).ready(function() {
             $('body').css('height', 'auto');
             $('#consoleBody').css('height', `${$(window).height()}`);
             document.documentElement.scrollTop = $('#headerBanner').offset().top + $('#headerBanner').outerHeight();
-            // console.log('SCROLLTOP: ' + document.documentElement.scrollTop)
         }
     
         if (currHeight > lastHeight && currWidth === lastWidth) { //virtual keyboard hide
@@ -73,12 +67,14 @@ $(document).ready(function() {
     
     })
     
+    socket.on('idCheck', remoteId => {
+        console.log(`client: ${remoteId}`)
+    })
     
     socket.on('available', (bool, duplicate) => {
         if (bool === true) {
             nameModal();
             if (duplicate === true) {
-                // console.log('DUPLICATE')
                 $('#nameWarning').css('display', 'block');
                 $('#nameModal').animate({
                     scrollTop: `${$('#nameModal').prop('scrollHeight')}`
@@ -110,8 +106,6 @@ $(document).ready(function() {
                 const name = $('#nameInput').val()
                 socket.emit('nameCheck', name);    
                 return;
-            } else {
-                // console.log('Enter your name');
             }
         });
     }
@@ -135,7 +129,6 @@ $(document).ready(function() {
         let msg;
         
         if ($('#chatBody').children().last().hasClass('scrollPush')) {
-            // console.log('true')
             msg = $(`
                 <p class="chat" style="margin-top: .3em"> <span class="bold mr-1">${msgArr[0]}:</span> ${msgArr[1]}<p>
             `) 
@@ -438,7 +431,6 @@ $(document).ready(function() {
         });
     
         checkNumPlayers(num);
-        // console.log(`There are ${num} players in the room`)
     });
     
     socket.on('updatePlayer', arr => {
@@ -464,7 +456,6 @@ $(document).ready(function() {
         delete currentPlayers[left];
         const el = $('#chat'+left);
         el.remove();
-        // console.log('num!', num)
         checkNumPlayers(num);
         if (left === null) {
             return;
@@ -472,12 +463,10 @@ $(document).ready(function() {
         const msg = $(`
             <p class="scrollPush text-center enterLeave">* * * ${left} left the room * * *</p>
         `);
-        insertMsg(msg, 'chatBody')
-        // console.log(`There are ${num} players in the room`);
+        insertMsg(msg, 'chatBody');
     });
     
     const checkNumPlayers = num => {
-        // console.log(num + " people in the room")
         $('#scoreboardDiv').fadeOut('slow');
         $('.modal').modal('hide');
         let msg, btn;
@@ -496,7 +485,6 @@ $(document).ready(function() {
                 btn = $(`
                     <p class="action redPush staticMsg">4 more players needed to play</p>
                 `)
-                // anim(test, 'buttonDiv');
                 anim(btn, 'buttonDiv');
                 break;
     
@@ -507,7 +495,6 @@ $(document).ready(function() {
                 btn = $(`
                     <p class="action staticMsg redPush">${n} more ${x} needed to start</p>
                 `);
-                // anim(test, 'buttonDiv');
                 anim(btn, 'buttonDiv');
                 break;
     
@@ -525,7 +512,6 @@ $(document).ready(function() {
                             const btn = $(`
                                 <p class="staticMsg notTurnButt">Waiting for all players to join . . . </p>
                             `);
-                            // anim(test, 'buttonDiv');
                             anim(btn, 'buttonDiv');
                         })
                         $('#notYetButt').on('click', () => {
@@ -538,7 +524,6 @@ $(document).ready(function() {
                         $('#startModal').modal('show');
                     });
                 }
-                // anim(test, 'buttonDiv');
                 anim(btn, 'buttonDiv', startListen);
                 break;
             
@@ -546,12 +531,10 @@ $(document).ready(function() {
                 btn = $(`
                     <p class="action staticMsg redPush">There are ${num - 10} too many players to start</p>
                 `)
-                // anim(test, 'buttonDiv');
                 anim(btn, 'buttonDiv');
                 break;
             
             default:
-                // console.log('HUH?')
                 return;
         }
     }
@@ -586,8 +569,6 @@ $(document).ready(function() {
     socket.on('turn', (current, name) => {
         $('#roundButt').off('click');
         current+=1;
-        // console.log('name: ', name)
-        // console.log(current);
     
         const turnBtn = $(`
             <button id="roundButt" class="action btn btn-success col bold text-center text-nowrap" type="button">IT'S YOUR TURN!</button>
@@ -649,9 +630,7 @@ $(document).ready(function() {
         $('#outcomeModal').modal('hide');
         $('#voteSubmit').off('click');
         $('#voteButt').off('click');
-        // console.log('331: ' + checked);
-        const newChecked = checked.map(name => name.toUpperCase()) //.splice(-1, 0, '&'); //capitalizes names, places '&' between last two
-        // console.log('332: ' + newChecked);
+        const newChecked = checked.map(name => name.toUpperCase());
     
         const chatMsg = $(`
             <p class="scrollPush text-center bold enterLeave">${name} proposes ${newChecked.join(', ')}</p>
@@ -687,10 +666,8 @@ $(document).ready(function() {
             const nay = $("#no").is(":checked");
             if (yea || nay) {
                 if (yea) {
-                    // console.log('yea vote!')
                     socket.emit('vote', 'yea');
                 } else {
-                    // console.log('nay vote!');
                     socket.emit('vote', 'nay');
                 }
     
@@ -747,7 +724,6 @@ $(document).ready(function() {
     socket.on('roundModal', (roundCards) => {
         $('#executeWarning').css('display', 'none');
         $('#executeButt').off('click');
-        // console.log(roundCards)
         $('#pass').prop('checked', false);
         $('#fail').prop('checked', false);
         const black = roundCards[0];
@@ -756,14 +732,11 @@ $(document).ready(function() {
         $('#redCard').attr('src', `${cards[red]}`)
         $('#roundModal').modal('show');
         $('#executeButt').on('click', function() {
-            // console.log('execute pressed')
             if ($('input[name="executeRadio"]:checked').length > 0) {
                 const selected = $('input[name="executeRadio"]:checked');
                 if (selected.attr('id') === 'pass') {
-                    // console.log('BLACK: ', black)
                     socket.emit('roundResolve','pass', black);
                 } else if (selected.attr('id') === 'fail') {
-                    // console.log('RED: ', red);
                     socket.emit('roundResolve','fail', red);
                 } else {
                     console.log('Error');
@@ -797,7 +770,6 @@ $(document).ready(function() {
     
         showResult(outcomeCards, 'submissionCards');
         $('#outcomeModal').on('hidden.bs.modal', () => {
-            // console.log('hidden!')
             socket.emit('cueNextTurn');
         });
     
@@ -832,7 +804,6 @@ $(document).ready(function() {
     
         showResult(outcomeCards, 'submissionCards');
         $('#outcomeModal').on('hidden.bs.modal', () => {
-            // console.log('hidden!')
             socket.emit('cueNextTurn');
         });
     
@@ -904,7 +875,6 @@ $(document).ready(function() {
     
     //takes object containing all player names and identity cards, removes client's entry, populates identity modal with all player's identities
     const getIdentities = obj => {
-        // console.log('IDOBJ: ', obj)
         $('#playerIdentities').html('');
         delete obj[handle];
         for (let player in obj) {

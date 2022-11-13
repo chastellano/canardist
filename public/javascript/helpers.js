@@ -62,16 +62,11 @@ export function checkcheck (round, max) {
         const checked = [];
         const checkboxArr = $('.checkcheck');
         checkboxArr.off('click');
-        // console.log(`There are ${checkboxArr.length} players`);
-        // console.log($('.checkcheck'));
-        // console.log(`Round: ${round}, Max: ${max}`);
         checkboxArr.on('click', function () {
             if (this.checked && (checked.length < max)) {
                 checked.push(this.nextElementSibling.innerHTML);
-                // console.log(`Checked: ${checked.length}, Max: ${max}`);
             } else if (this.checked && (checked.length === max)) {
                 this.checked = false;
-                // console.log(`Checked: ${checked.length}, Max: ${max}`);
                 $('.proposeWarning').css('display', 'none');
                 $('#tooManyWarning').html(`You can ONLY choose ${max} people`);
                 $('#tooManyWarning').css('display', 'block');
@@ -81,12 +76,10 @@ export function checkcheck (round, max) {
             } else if (!this.checked) {
                 const index = checked.indexOf(this.nextElementSibling.innerHTML)
                 checked.splice(index, 1);
-                // console.log(`Checked: ${checked.length}, Max: ${max}`);
             }
         })
         $('#roundPropose').on('click', function () {
             if (checked.length === max) {
-                // console.log('success!');
                 checkboxArr.off('click');
                 resolve(checked);
             } else {
@@ -113,7 +106,6 @@ export function anim (newEl, el, listener = null) {
 
     //checks if el has any child nodes, fades in child if not, applies listener
     if ($(parent).children().length === 0) {
-        // $(parent).css(`background-color, ${newEl.css('background-color')}`).fadeIn(1000);
         $(parent).append(newEl.hide().delay(400).fadeIn(1000, function() {
             if(listener) {
                 listener();
@@ -131,11 +123,8 @@ export function anim (newEl, el, listener = null) {
         //compare content of old and new children, returns if they are the same and no listener is passed
         const oldContent = oldEl.eq(0).html();
         const newContent = newEl.html();
-        // console.log('OLD: ' + oldContent)
-        // console.log('NEW: ' + newContent)
-        if (!listener && oldContent === newContent) {
-            // console.log('same html, no listener')
-        } else {
+
+        if (listener || oldContent != newContent) {
             //appends but hides new child, captures css bg color in variable
             $(parent).append(newEl.hide());
             
@@ -145,7 +134,6 @@ export function anim (newEl, el, listener = null) {
             //if new (hidden) child and old child have same bg, visible child is faded out
             //and new child is faded in, applies listener
             if (newColor === oldColor) {
-                // console.log('same bg!')
                 $(oldEl).fadeOut(400, function () {
                     $(this).remove();
                     newEl.delay(400).fadeIn(600, function() {
@@ -158,9 +146,7 @@ export function anim (newEl, el, listener = null) {
             //if bgs are different, changes bg of parent behind old child to new child's bg color
             //fades out current child, fades in new child, applies listener
             } else {
-                // console.log('different bgs!')
                 $(parent).css('background-color', newColor);
-                // console.log('Parent bg is now: ', $(parent).css('background-color'));
                 $(oldEl).fadeOut(600, function () {
                     $(this).remove();
                     newEl.delay(600).fadeIn(600, function () {
@@ -169,8 +155,6 @@ export function anim (newEl, el, listener = null) {
                         }
                     });
                 });
-                // console.log (`There is ${$(parent).find('*').length} child in ${el}`)
-                // console.log($(parent).html());
             }
         }
     }

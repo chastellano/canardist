@@ -23,9 +23,7 @@ const idGen = (arr) => {
         for (let i = 0; i < len1; i++) {
             for (let j = 0; j < len2; j++) {
                 const idArr = [words.first[i], words.second[j]];
-                console.log('TRYING ID: ' + idArr.join('_'));
                 if (arr.length === 0 || !arr.includes(idArr.join('_'))) {
-                    console.log('CHECK ID RESOLVED, SENDING ' + idArr)
                     resolve(idArr.join('-'));
                     return;
                 } else {

@@ -3,7 +3,6 @@ const black = ['ac', 'as', '2c', '2s', '3c', '3s', '4c', '4s', '5c', '5s', '6c',
 const buttColors = ['btn-green', 'btn-blue', 'btn-yellow', 'btn-red', 'btn-indigo', 'btn-brown', 'btn-orange', 'btn-violet', 'btn-beige', 'btn-aqua']
 
 function genTeamsTemp(num) {
-    // console.log(`We got ${num}`);  
     let reds;
     let blacks;  
     switch (num) {
@@ -32,15 +31,12 @@ function genTeamsTemp(num) {
             reds = 4
             break;
         default:
-            console.log('Error');
             break;
     }
     return {blacks, reds};
 }
 
 function roundArr(num) {
-    // numplayers = numPlayers = parseInt(playersInput.value);
-    // roundDeal.innerHTML = '';
     const rounds = []
     switch (num) {
         case 5:
@@ -74,9 +70,8 @@ function roundArr(num) {
             rounds[4] = 5;
             break;
         default:
-            console.log('Error')
+            break;
     }
-    // roundDeal.innerHTML = rounds.join(', ');
     return rounds;
 }
 
@@ -107,7 +102,6 @@ function dealReturn (item, arr) {
         arr.push(item);
     } else if ( Array.isArray(item) ) {
         item = item.flat();
-        // console.log('flattened: ', item);
         arr.push(...item);
     } else {
         console.log('first argument can only accept an array or string')
@@ -116,7 +110,6 @@ function dealReturn (item, arr) {
 
 //takes a teams template as argument, instantiates/shuffles new game deck, deals out requisite id cards from each deck
 function dealIdentity(game, temp) {
-
     game['deck']['red'] = shuffle(red.slice());
     game['deck']['black'] = shuffle(black.slice());
 
@@ -124,17 +117,14 @@ function dealIdentity(game, temp) {
     const redIdCards = dealOut(temp.reds, game['deck']['red'])
     identityCards = blackIdCards.concat(redIdCards);
 
-    console.log('130: ' + identityCards)
     return identityCards;
 }
 
 function populateThings (room, num) {
     const teamsTemp = genTeamsTemp(num)
     const idCards = dealIdentity(room['game'], teamsTemp);
-    console.log('135: ' + JSON.stringify(idCards) + JSON.stringify(teamsTemp) );
 
     //populate Game obj
-
     room['game'].idCards = idCards;
     room['game'].teamsTemp = teamsTemp;
     room['game'].rounds = roundArr(num);
@@ -148,10 +138,8 @@ function populateThings (room, num) {
 
     shuffle(cards);
     shuffle(colorArr);
-    console.log('153: ' + JSON.stringify(cards), JSON.stringify(colorArr))
 
     //populate Player objs
-
     for (let player in room['players']) {
         
         //assign teams and id cards
@@ -162,11 +150,9 @@ function populateThings (room, num) {
         } else {
             room['players'][player]['team'] = 'red';
         }
-        // console.log('166: ' + card + cards)
         
         //assign button color
         room['players'][player]['color'] = dealOut(1, colorArr);
-        // console.log('170: ' + room['players'][player]['color']);
 
         //generate and assign div for button and label
         const color = room['players'][player]['color'];
@@ -186,13 +172,10 @@ function populateThings (room, num) {
         //populates Game.idsObj, which has each players {name: idCard}
         room['game']['idsObj'][player] = room['players'][player]['idCard'];
     }
-    // console.log('190: ' + JSON.stringify(room['game']['idsObj'], null, 2));
-    // console.log('191: ' + JSON.stringify(room['players'], null, 2));
 }
 
 //accepts number of players in round and game deck, returns array of arrays with one black and one red card for each player
 function dealRound (num, deck) {
-    // console.log('197:   black: ', deck.black.length, ' red: ', deck.red.length);
     const pairArr = [];
     const black = deck.black.slice();
     const red = deck.red.slice();
@@ -203,7 +186,6 @@ function dealRound (num, deck) {
         pairArr.push(pair);
     }
 
-    console.log(`210:  pairArr (${pairArr}) `)
     return pairArr;
 }
 

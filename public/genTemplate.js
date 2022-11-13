@@ -15,7 +15,7 @@ const genTemplate = async () => {
             return homeHtml;
         }
     } catch {
-        console.log('GENTEMP 9: error');
+        console.log('Error: Could not generate game ID');
     }
 }
 
