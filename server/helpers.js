@@ -1,8 +1,8 @@
 const red = ['ah', 'ad', '2h', '2d', '3h', '3d', '4h', '4d', '5h', '5d', '6h', '6d', '7h', '7d', '8h', '8d', '9h', '9d', '10h', '10d', 'jh', 'jd', 'qh', 'qd', 'kh', 'kd'];
 const black = ['ac', 'as', '2c', '2s', '3c', '3s', '4c', '4s', '5c', '5s', '6c', '6s', '7c', '7s', '8c', '8s', '9c', '9s', '10c', '10s', 'jc', 'js', 'qc', 'qs', 'kc', 'ks'];
-const buttColors = ['btn-green', 'btn-blue', 'btn-yellow', 'btn-red', 'btn-indigo', 'btn-brown', 'btn-orange', 'btn-violet', 'btn-beige', 'btn-aqua']
+const colors = ['btn-green', 'btn-blue', 'btn-yellow', 'btn-red', 'btn-indigo', 'btn-brown', 'btn-orange', 'btn-violet', 'btn-beige', 'btn-aqua']
 
-function genTeamsTemp(num) {
+function createTeamsTemplate(num) {
     let reds;
     let blacks;  
     switch (num) {
@@ -36,38 +36,22 @@ function genTeamsTemp(num) {
     return {blacks, reds};
 }
 
-function roundArr(num) {
+function createRoundArray(num) {
     const rounds = []
     switch (num) {
         case 5:
-            rounds[0] = 2;
-            rounds[1] = 3;
-            rounds[2] = 2;
-            rounds[3] = 3;
-            rounds[4] = 3;
+            rounds.push(2, 3, 2, 3, 3)
             break;
         case 6:
-            rounds[0] = 2;
-            rounds[1] = 3;
-            rounds[2] = 4;
-            rounds[3] = 3;
-            rounds[4] = 4;
+            rounds.push(2, 3, 4, 3, 4)
             break;
         case 7:
-            rounds[0] = 2;
-            rounds[1] = 3;
-            rounds[2] = 3;
-            rounds[3] = 4;//***
-            rounds[4] = 4;
+            rounds.push(2, 3, 3, 4, 4)
             break;
         case 8:
         case 9:
         case 10:
-            rounds[0] = 3;
-            rounds[1] = 4;
-            rounds[2] = 4;
-            rounds[3] = 5;//***
-            rounds[4] = 5;
+            rounds.push(3, 4, 4, 5, 5)
             break;
         default:
             break;
@@ -120,54 +104,47 @@ function dealIdentity(game, temp) {
     return identityCards;
 }
 
-function populateThings (room, num) {
-    const teamsTemp = genTeamsTemp(num)
+function buildGameObjects (room) {
+    const numberOfPlayers = room['joins'].length;
+    const teamsTemp = createTeamsTemplate(numberOfPlayers)
     const idCards = dealIdentity(room['game'], teamsTemp);
-
+    console.log({idCards});
     //populate Game obj
     room['game'].idCards = idCards;
     room['game'].teamsTemp = teamsTemp;
-    room['game'].rounds = roundArr(num);
+    room['game'].playersPerRound = createRoundArray(numberOfPlayers);
     room['game'].currentRound = 0;
-    room['game'].order = shuffle(Object.keys(room['players']));
-    room['game'].turn = room['game'].order[0];
-    room['game'].next = room['game'].order[1];
+    room['game'].turn = room['joins'][0];
+    // room['game'].next = room['joins'][1];
+    room['game'].order = shuffle(room['joins']);
 
-    const cards = room['game'].idCards;
-    const colorArr = buttColors.slice(0, num);
-
-    shuffle(cards);
-    shuffle(colorArr);
+    const cards = shuffle(room['game'].idCards);
+    const buttonColors = shuffle(colors.slice(0, numberOfPlayers));
 
     //populate Player objs
-    for (let player in room['players']) {
+    for (let player of room['joins']) {
         
         //assign teams and id cards
         const card = dealOut(1, cards);
         room['players'][player]['idCard'] = card;
-        if (card.includes('s') || card.includes('c')) {
-            room['players'][player]['team'] = 'black';
-        } else {
-            room['players'][player]['team'] = 'red';
-        }
-        
+        room['players'][player]['team'] = card.includes('s') || card.includes('c') ? 'black' : 'red';
+
         //assign button color
-        room['players'][player]['color'] = dealOut(1, colorArr);
+        room['players'][player]['color'] = dealOut(1, buttonColors);
 
         //generate and assign div for button and label
         const color = room['players'][player]['color'];
-        const name = room['players'][player]['name'];
-        const button = 
+        const name = room['players'][player]['name']; 
+        
+        room['players'][player]['button'] = 
             `<div>
                 <input type="checkbox" class="hideInput checkcheck" id="${name}" name="" value="${name}">
                 <label class="btn-circle ${color}" id="${name}Label" for="${name}">${name}</label>
-            </div>`
-        const label =
+            </div>`;
+        room['players'][player]['label'] = 
             `<div>
                 <label class="${color} btn-circle">${name}</label>
-            </div>`
-        room['players'][player]['button'] = button;
-        room['players'][player]['label'] = label;
+            </div>`;
         
         //populates Game.idsObj, which has each players {name: idCard}
         room['game']['idsObj'][player] = room['players'][player]['idCard'];
@@ -177,8 +154,8 @@ function populateThings (room, num) {
 //accepts number of players in round and game deck, returns array of arrays with one black and one red card for each player
 function dealRound (num, deck) {
     const pairArr = [];
-    const black = deck.black.slice();
-    const red = deck.red.slice();
+    const black = shuffle(deck.black.slice());
+    const red = shuffle(deck.red.slice());
     for (let i = 0; i < num; i++) {
         const blackCard = dealOut(1, black);
         const redCard = dealOut(1, red);
@@ -189,9 +166,14 @@ function dealRound (num, deck) {
     return pairArr;
 }
 
+function isSubmissionPass (card) {
+    return black.includes(card);
+}
+
 module.exports = {
-    populateThings: populateThings,
-    dealRound: dealRound,
-    shuffle: shuffle
+    buildGameObjects,
+    dealRound,
+    shuffle,
+    isSubmissionPass
 }
 

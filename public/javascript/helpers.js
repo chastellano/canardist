@@ -54,10 +54,9 @@ export const cards = {
 }
 
 export function checkcheck (round, max) {
-    round+=1;
     $('#roundPropose').off('click');
     $('.proposeWarning').css('display', 'none');
-    $('#proposeModalHeader').html(`Choose ${max} people for Round ${round}:`)
+    $('#proposeModalHeader').html(`Choose ${max} people for Round ${round+1}:`)
     return new Promise (function(resolve, reject){
         const checked = [];
         const checkboxArr = $('.checkcheck');
@@ -99,14 +98,13 @@ export function checkcheck (round, max) {
 }
 
 
-//first argument is new child element, second is parent element to append child
 
-export function anim (newEl, el, listener = null) {
-    const parent = '#' + el
+export function anim (newElement, parentElement, listener = null) {
+    const parent = '#' + parentElement
 
     //checks if el has any child nodes, fades in child if not, applies listener
     if ($(parent).children().length === 0) {
-        $(parent).append(newEl.hide().delay(400).fadeIn(1000, function() {
+        $(parent).append(newElement.hide().delay(400).fadeIn(1000, function() {
             if(listener) {
                 listener();
             }
@@ -122,21 +120,21 @@ export function anim (newEl, el, listener = null) {
 
         //compare content of old and new children, returns if they are the same and no listener is passed
         const oldContent = oldEl.eq(0).html();
-        const newContent = newEl.html();
+        const newContent = newElement.html();
 
         if (listener || oldContent != newContent) {
             //appends but hides new child, captures css bg color in variable
-            $(parent).append(newEl.hide());
+            $(parent).append(newElement.hide());
             
             const oldColor = $(oldEl).css('background-color')
-            const newColor = newEl.css('background-color');
+            const newColor = newElement.css('background-color');
 
             //if new (hidden) child and old child have same bg, visible child is faded out
             //and new child is faded in, applies listener
             if (newColor === oldColor) {
                 $(oldEl).fadeOut(400, function () {
                     $(this).remove();
-                    newEl.delay(400).fadeIn(600, function() {
+                    newElement.delay(400).fadeIn(600, function() {
                         if (listener) {
                             listener();
                         }
@@ -149,7 +147,7 @@ export function anim (newEl, el, listener = null) {
                 $(parent).css('background-color', newColor);
                 $(oldEl).fadeOut(600, function () {
                     $(this).remove();
-                    newEl.delay(600).fadeIn(600, function () {
+                    newElement.delay(600).fadeIn(600, function () {
                         if (listener) {
                             listener();
                         }
@@ -157,15 +155,5 @@ export function anim (newEl, el, listener = null) {
                 });
             }
         }
-    }
-}
-
-export function insertMsg (msg, el) {
-    el = '#' + el
-    const check = ($(el)[0].scrollHeight - ($(el)[0].scrollTop + $(el)[0].offsetHeight) <= 2);
-
-    $(el).append(msg.hide().fadeIn('slow'));
-    if(check) {
-        $(el)[0].scrollTop = $(el)[0].scrollHeight;
     }
 }
