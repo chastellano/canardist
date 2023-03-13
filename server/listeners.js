@@ -18,7 +18,6 @@ module.exports = io => {
             this.turn,
             this.next,
             this.idCards = [],
-            this.idsObj = {},
             this.playersOnCurrentMission = [],
             this.vote = { yeas: [], nays: []},
             this.missionCards = {},
@@ -45,7 +44,7 @@ module.exports = io => {
         constructor(sessionId, socketId, name) {
             this.sessionId = sessionId;
             this.socketId = socketId;
-            this.inCurrentGame = null;
+            this.isInCurrentGame = null;
             this.name = name;
             this.connected = true;
             this.team = null;
@@ -78,7 +77,6 @@ module.exports = io => {
                         handle = playersWithMatchingSession[0].name;
                         console.log("the chosen one, ", handle, ", has returned...");
                         const gameInProgress = rooms[gameId] && rooms[gameId]['game'] && Object.keys(rooms[gameId]['game']).length > 0;
-                        console.log({gameInProgress});
 
                         socket.join(gameId);
                         rooms[gameId]['players'][handle]['connected'] = true;
@@ -146,8 +144,6 @@ module.exports = io => {
             if (handle && rooms[gameId] && rooms[gameId]['players'] && rooms[gameId]['players'][handle]) {
                 rooms[gameId]['players'][handle]['connected'] = false;
                 const numRemainingConnectedPlayers = Object.values(rooms[gameId]['players']).filter(p => p.connected).length;
-                console.log("number of remaining connected players: ", numRemainingConnectedPlayers);
-                console.log("disconnected player: ", handle)
 
                 if (numRemainingConnectedPlayers === 0) {
                     if (activeIds.indexOf(gameId) !== -1) {
@@ -175,6 +171,10 @@ module.exports = io => {
         socket.on('reload', function () {
             rooms[gameId]['joins'] = [];
             delete rooms[gameId]['game'];
+            for (let player in rooms[gameId]['players']) {
+                rooms[gameId]['players'][player]['isInCurrentGame'] = false;
+            }
+
             const resetGameMsg = resetGame(handle);
             archiveMessage(gameId, resetGameMsg);
             io.to(gameId).emit('exitGame', resetGameMsg);
@@ -188,7 +188,6 @@ module.exports = io => {
             }
 
             if (rooms[gameId]['game'] && Object.keys(rooms[gameId]['game']).length > 0){
-                console.log('game in progress!')
                 return io.to(socket.id).emit('gameInProgress', rooms[gameId]['game']['scoreboard'], rooms[gameId]['game']['currentRound'] + 1);
             }
 
@@ -197,9 +196,6 @@ module.exports = io => {
             }
 
             const currentPlayersJoined = rooms[gameId]['joins'];
-
-            console.log({previousJoins});
-            console.log("currentJoins: ", currentPlayersJoined.length);
         
             if (currentPlayersJoined.length < 5) {
                 for (let player of currentPlayersJoined) {
@@ -208,7 +204,6 @@ module.exports = io => {
             }
             
             else if (previousJoins === 4 && currentPlayersJoined.length === 5) {
-                // rooms[gameId]['joins'] = shuffle(rooms[gameId]['joins']);
                 const firstTurn = shuffle(rooms[gameId]['joins'])[0];
                 const turnSocket = rooms[gameId]['players'][firstTurn]['socketId'];
                 io.to(turnSocket).emit('notifyFirstTurn');
@@ -237,17 +232,12 @@ module.exports = io => {
             if (index > -1) rooms[gameId]['joins'].splice(index, 1);
             const currentPlayersJoined = rooms[gameId]['joins'];
 
-            console.log({previousJoins});
-            console.log("currentJoins: ", currentPlayersJoined.length);
-            console.log({currentPlayersJoined});
-          
             if (currentPlayersJoined.length < 5) {
                 for (let player of currentPlayersJoined) {
                     io.to(rooms[gameId]['players'][player]['socketId']).emit('morePlayersNeeded', 5 - currentPlayersJoined.length);
                 }
             } else if (previousJoins === 10 && currentPlayersJoined.length < 10) {
                 const unjoinedPlayers = Object.keys(rooms[gameId]['players']).filter(p => !currentPlayersJoined.includes(p));
-                console.log({unjoinedPlayers});
                 for (let player of unjoinedPlayers) {
                     io.to(rooms[gameId]['players'][player]['socketId']).emit('inviteToJoinGame');
                 }
@@ -329,7 +319,6 @@ module.exports = io => {
             }
 
             const color = vote === 'yea' ? 'greenVote' : 'redVote';
-            console.log(JSON.stringify(rooms[gameId]['game']['vote']));
             const voteMessage = playerVote(color, handle, vote);
             archiveMessage(gameId, voteMessage);
             io.to(gameId).emit('votePush', voteMessage);
@@ -377,7 +366,6 @@ module.exports = io => {
 
         socket.on('roundResolve', card => {
             rooms[gameId]['game']['submissions'][handle] = card;
-            console.log(rooms[gameId]['game']['submissions']);
             
             const numberOfPlayersOnMission = rooms[gameId]['game']['playersOnCurrentMission'].length;
             const submittedCards = Object.values(rooms[gameId]['game']['submissions']);
@@ -390,6 +378,9 @@ module.exports = io => {
                 
                 if (rooms[gameId]['game']['scoreboard']['black'] > 2 || rooms[gameId]['game']['scoreboard']['red'] > 2) {
                     delete rooms[gameId]['game'];
+                    for (let player in rooms[gameId]['players']) {
+                        rooms[gameId]['players'][player]['isInCurrentGame'] = false;
+                    }
                 } else {
                     rooms[gameId]['game']['playersOnCurrentMission'] = []; 
                     rooms[gameId]['game']['submissions'] = {};
@@ -426,11 +417,6 @@ module.exports = io => {
         if(rooms[gameId]['chat'].length > 50) {
             rooms[gameId]['chat'].shift();
         }
-    }
-
-    //checks if there is a room with id: gameId and if Game object has been generated
-    const isRoomJoinable = gameId => {
-        return !(rooms[gameId] && rooms[gameId]['game'] && Object.keys(rooms[gameId]['game']).length > 0);
     }
 
     const emitToAllExcept = (event, gameId, payload, exception) => {
@@ -472,10 +458,14 @@ module.exports = io => {
         const color = team === 'black' ? 'bg-black' : 'bg-danger';
         
         if (score > 2) {
-            const idsObj = rooms[gameId]['game']['idsObj'];
+            const idCards = {};
+            Object.values(rooms[gameId]['players']).filter(p => p.isInCurrentGame).forEach(p => {
+                idCards[p.name] = p.idCard;
+            });
+
             const winnerMsg = teamWinsGame(color, team.toUpperCase());
             archiveMessage(gameId, winnerMsg);
-            io.to(gameId).emit('winner', team, submittedCards, idsObj, winnerMsg);
+            io.to(gameId).emit('winner', team, submittedCards, idCards, winnerMsg);
         } else {
             const missionResult = team === 'black' ? 'pass' : 'fail';
             const roundWinnerMsg = teamWinsRound(color, team.toUpperCase(), currentRound)
@@ -530,13 +520,14 @@ module.exports = io => {
         else if (isGameFull) {
             io.to(socketId).emit('tooManyPlayers');
         }
+        else {
+            io.to(socketId).emit('inviteToJoinGame');
+        }
     }
 
     const emitGameStateToReturningPlayer = (name, socketId, gameId) => {
         const isPlayersTurn = rooms[gameId]['game']['turn'] === name;
         const proposalSubmitted = rooms[gameId]['game']['playersOnCurrentMission'].length > 0;
-        console.log({isPlayersTurn});
-        console.log({proposalSubmitted});
         
         //player needs to submit proposal
         if (!proposalSubmitted) {
@@ -545,11 +536,8 @@ module.exports = io => {
         else {
             const yeas =  rooms[gameId]['game']['vote']['yeas'];
             const nays = rooms[gameId]['game']['vote']['nays'];
-            console.log({yeas});
-            console.log({nays});
             
             const allPlayersHaveVoted = yeas.length + nays.length === rooms[gameId]['game']['numberOfPlayers'];
-            console.log({allPlayersHaveVoted})
             
             if (!allPlayersHaveVoted) {
                 if(yeas.includes(name) || nays.includes(name)){
@@ -566,8 +554,6 @@ module.exports = io => {
             else {
                 const playerIsOnMission = rooms[gameId]['game']['playersOnCurrentMission'].includes(name);
                 const playerHasSubmitted = Object.keys(rooms[gameId]['game']['submissions']).includes(name);
-                console.log({playerIsOnMission});
-                console.log({playerHasSubmitted});
                 
                 //player needs to submit mission card
                 if(playerIsOnMission && !playerHasSubmitted){

@@ -36,7 +36,7 @@ $(document).ready(function() {
     socket.on('exitGame', msg => {
         insertMsg(msg);
         $('#reloadModal').modal('hide');
-        $('#scoreboardDiv').css('display', 'none');
+        $('#scoreboardDiv').fadeOut('slow');
         $('#exitButt').off('click');
 
         const btn = $(`<button class="action btn btn-success col bold" id='joinGameButt' type='button'>JOIN NEW GAME</button>`)
@@ -80,7 +80,6 @@ $(document).ready(function() {
 
         const btn = $(`<p class="action staticMsg notTurnButt">Game is in progess . . .</p>`);
         anim(btn, 'buttonDiv');
-
         
         players.forEach(player => {
             const msg = `<p class="scrollPush text-center enterLeave">* * * ${player.name} joined the room * * *</p>`;
@@ -335,8 +334,8 @@ $(document).ready(function() {
     });
     
     socket.on('votedUp', proposalApprovedMsg => {    
-        const btn = $(`<p class="action staticMsg notTurnButt">Waiting for submissions . . . </p>`);
         insertMsg(proposalApprovedMsg);
+        const btn = $(`<p class="action staticMsg notTurnButt">Waiting for submissions . . . </p>`);
         anim(btn, 'buttonDiv');
     });
     
@@ -425,10 +424,7 @@ $(document).ready(function() {
         });
     });
     
-    socket.on('winner', (color, outcomeCards, ids, msg) => {dfgdfg
-        btn = $(`<button class="action btn btn-success col bold" id='joinGameButt' type='button'>JOIN NEW GAME</button>`)
-        anim(btn, 'buttonDiv', joinGameButtonListener);
-
+    socket.on('winner', (color, outcomeCards, ids, msg) => {
         const scoreEl = $(`<span id="${color}Num">3</span>`);
         $(`#${color}Num`).fadeOut('slow', function() {
             $(this).remove()
@@ -613,45 +609,6 @@ $(document).ready(function() {
         }, 1000);
     }
 
-    const updateTotalNumberOfPlayers = numberOfPlayers => {
-        $('#scoreboardDiv').fadeOut('slow');
-        $('.modal').modal('hide');
-        let btn;
-    
-        switch(true) {
-    
-            case numberOfPlayers === 0:
-                // $('#chatBody').html('');
-                break;
-    
-            case numberOfPlayers === 1:
-                btn = $(`<p class="action redPush staticMsg">4 more players needed to play</p>`)
-                anim(btn, 'buttonDiv');
-                break;
-    
-            case numberOfPlayers > 1 && numberOfPlayers < 5:
-                const n = 5 - numberOfPlayers;
-                let x;
-                n === 1 ? x = 'player' : x = 'players';
-                btn = $(`<p class="action staticMsg redPush">${n} more ${x} needed to start</p>`);
-                anim(btn, 'buttonDiv');
-                break;
-    
-            case numberOfPlayers > 4 && numberOfPlayers < 11:
-                btn = $(`<button class="action btn btn-success col bold" id='joinGameButt' type='button'>JOIN NEW GAME</button>`)
-                anim(btn, 'buttonDiv', joinGameButtonListener);
-                break;
-            
-            case numberOfPlayers > 10:
-                btn = $(`<p class="action staticMsg redPush">There are ${numberOfPlayers - 10} too many players to start</p>`)
-                anim(btn, 'buttonDiv');
-                break;
-            
-            default:
-                return;
-        }
-    }
-
     const insertMsg = msg => {
         const newMsg = $(msg);
         const check = ($('#chatBody')[0].scrollHeight - ($('#chatBody')[0].scrollTop + $('#chatBody')[0].offsetHeight) <= 2);
@@ -684,9 +641,6 @@ $(document).ready(function() {
     })
 
     const showScoreboard = (black, red, currentRound) => {
-        const btn = $(`<p class="action staticMsg notTurnButt">Game is in progess . . .</p>`);
-        anim(btn, 'buttonDiv');
-
         $('#blackNum').html(black);
         $('#redNum').html(red);
         $('#roundNum').html(currentRound);
@@ -707,10 +661,10 @@ $(document).ready(function() {
     }
     
     const joinGameButtonListener = () => {
-        $('#scoreboardDiv').css('display', 'none');
         $('#joinGameButt').off('click')
         $('#joinGameButt').on('click', () => {
             socket.emit('joinGame');
+            $('#scoreboardDiv').fadeOut('slow');
         });
     }
 
@@ -777,8 +731,8 @@ $(document).ready(function() {
         }
     };
     
-    const identityReveal = async (obj) => {
-        await getIdentities(obj)
+    const identityReveal = obj => {
+        getIdentities(obj);
         $('#revealButt').off('click');
         $('#revealButt').on('click', function () {
             $('#winnerModal').on('hidden.bs.modal', () => {
@@ -790,19 +744,12 @@ $(document).ready(function() {
         });
     
         $('#identityModal').on('hidden.bs.modal', () => {
-            function exitListen () {
-                $('#exitButt').on('click', () => {
-                    $('#scoreboardDiv').css('display', 'none');
-                    socket.emit('exitGame');
-                    $('#identityModal').off();
-                })
-            }
-            const btn = $(`<button class="action btn btn-success col bold" id="exitButt" type="button">EXIT GAME</button>`)
-            anim(btn, 'buttonDiv', exitListen)   
+            const btn = $(`<button class="action btn btn-success col bold" id='joinGameButt' type='button'>JOIN NEW GAME</button>`)
+            anim(btn, 'buttonDiv', joinGameButtonListener);   
         })   
     }
 
-    $('#join').focus().click(() =>{ //socket.emit('checkRoomIsJoinable'));
+    $('#join').focus().click(() =>{
         $('#nameModal').modal('show');
         $('#nameModal').on('shown.bs.modal', () => $('#nameInput').focus());
     });

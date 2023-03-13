@@ -80,18 +80,6 @@ function dealOut (num, arr) {
     }
 }
 
-//returns item to arr, if item is array it is flattened and then concatenated to arr
-function dealReturn (item, arr) {
-    if ( typeof item === 'string' ) {
-        arr.push(item);
-    } else if ( Array.isArray(item) ) {
-        item = item.flat();
-        arr.push(...item);
-    } else {
-        console.log('first argument can only accept an array or string')
-    }
-}
-
 //takes a teams template as argument, instantiates/shuffles new game deck, deals out requisite id cards from each deck
 function dealIdentity(game, temp) {
     game['deck']['red'] = shuffle(red.slice());
@@ -99,7 +87,7 @@ function dealIdentity(game, temp) {
 
     const blackIdCards = dealOut(temp.blacks, game['deck']['black'])
     const redIdCards = dealOut(temp.reds, game['deck']['red'])
-    identityCards = blackIdCards.concat(redIdCards);
+    const identityCards = blackIdCards.concat(redIdCards);
 
     return identityCards;
 }
@@ -145,9 +133,8 @@ function buildGameObjects (room) {
             `<div>
                 <label class="${color} btn-circle">${name}</label>
             </div>`;
-        
-        //populates Game.idsObj, which has each players {name: idCard}
-        room['game']['idsObj'][player] = room['players'][player]['idCard'];
+
+        room['players'][player]['isInCurrentGame'] = true;
     }
 }
 
