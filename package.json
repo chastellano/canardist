@@ -2,7 +2,7 @@
   "name": "canardist",
   "version": "1.0.0",
   "engines": {
-    "node": "16.7.1"
+    "node": "14.9.0"
   } ,
   "description": "Canardist card game",
   "main": "index.js",

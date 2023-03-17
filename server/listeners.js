@@ -106,7 +106,9 @@ module.exports = io => {
         });
 
         socket.on('checkNameIsAvailable', requestedName => {            
-                rooms[gameId] ??= { players: {}, sessionIds: [], game: {}, chat: [], joins: [] };
+                if (rooms[gameId] === null) { 
+                    rooms[gameId] = { players: {}, sessionIds: [], game: {}, chat: [], joins: [] }
+                }
 
                 if (rooms[gameId]['players'][requestedName]) {
                     io.to(socket.id).emit('nameIsUnavailable');
@@ -402,7 +404,10 @@ module.exports = io => {
     });
 
     const archiveMessage = (gameId, message) => {
-        rooms[gameId]['chat'] ??= [];
+        if (rooms[gameId]['chat'] === null){
+            rooms[gameId]['chat'] = [];
+        }
+        
         rooms[gameId]['chat'].push(message);
         if(rooms[gameId]['chat'].length > 50) {
             rooms[gameId]['chat'].shift();
