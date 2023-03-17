@@ -65,7 +65,6 @@ module.exports = io => {
         io.to(socket.id).emit("checkForExistingSession");
 
         socket.on('existingSession', sessionId => {
-            console.log("session id: ", sessionId);
             if (sessionId) {
                 socket.sessionId = sessionId;
 
@@ -75,7 +74,6 @@ module.exports = io => {
 
                     if(isReturningPlayer) {
                         handle = playersWithMatchingSession[0].name;
-                        console.log("the chosen one, ", handle, ", has returned...");
                         const gameInProgress = rooms[gameId] && rooms[gameId]['game'] && Object.keys(rooms[gameId]['game']).length > 0;
 
                         socket.join(gameId);
@@ -247,14 +245,15 @@ module.exports = io => {
         socket.on('startGame', () => {
             rooms[gameId]['game'] = new Game();
             let sessionIdsInGame = [];
-            Object.values(rooms[gameId]['players']).forEach(p => {
-                if (rooms[gameId]['joins'].includes(p.name)){
-                    sessionIdsInGame.push(p.sessionId);
+            for (let player of Object.values(rooms[gameId]['players'])) {
+                if (rooms[gameId]['joins'].includes(player.name)){
+                    sessionIdsInGame.push(player.sessionId);
+                    rooms[gameId]['players'][player.name].isInCurrentGame = true;
                 }
                 else {
-                    io.to(p.socketId).emit('gameInProgress', {black: 0, red: 0}, 1);
+                    io.to(player.socketId).emit('gameInProgress', {black: 0, red: 0}, 1);
                 }
-            });
+            };
             rooms[gameId]['game']['sessionIds'].push(...sessionIdsInGame);
             buildGameObjects(rooms[gameId]);
             rooms[gameId]['joins'] = [];
@@ -279,13 +278,8 @@ module.exports = io => {
             archiveMessage(gameId, redPlayersMsg);
         })
 
-        socket.on('getButtons', () => {
-            let playerButtons = []
-        
-            for (let player in rooms[gameId]['players']) {
-                playerButtons.push(rooms[gameId]['players'][player]['button']);
-            }
-          
+        socket.on('getButtons', () => {                            
+            const playerButtons = Object.values(rooms[gameId]['players']).filter(p => p.isInCurrentGame).map(p => p.button);
             const currentRound = rooms[gameId]['game']['currentRound'];
             const roundMax = rooms[gameId]['game']['roundMax'];
 
@@ -353,11 +347,6 @@ module.exports = io => {
                     const nextUp = nextTurn(gameId);
                     const nextSock = rooms[gameId]['players'][nextUp]['socketId'];
 
-                    if (currentRound === 3 && numberOfPlayers > 6) {
-                        archiveMessage(gameId, specialRound);
-                        io.to(gameId).emit('specialRound', specialRound);
-                    }
-
                     io.to(nextSock).emit('turn', currentRound, nextUp);
                     emitToAllExcept('notTurn', gameId, nextUp, nextUp);
                 }
@@ -371,10 +360,10 @@ module.exports = io => {
             const submittedCards = Object.values(rooms[gameId]['game']['submissions']);
 
             if ( submittedCards.length === numberOfPlayersOnMission ) {
-                rooms[gameId]['game']['currentRound'] += 1;
                 const fails = submittedCards.filter(card => !isSubmissionPass(card)).length;
-
                 fails > rooms[gameId]['game']['allowableFails'] ? teamScores(gameId, 'red') : teamScores(gameId, 'black');
+                
+                rooms[gameId]['game']['currentRound'] += 1;
                 
                 if (rooms[gameId]['game']['scoreboard']['black'] > 2 || rooms[gameId]['game']['scoreboard']['red'] > 2) {
                     delete rooms[gameId]['game'];
@@ -390,7 +379,8 @@ module.exports = io => {
                     nextTurn(gameId);
 
                     if (rooms[gameId]['game']['allowableFails'] === 1) {
-                        io.to(gameId).emit('specialRound');
+                        archiveMessage(gameId, specialRound);
+                        io.to(gameId).emit('specialRound', specialRound);
                     }
                 }
             }
@@ -454,7 +444,7 @@ module.exports = io => {
     const teamScores = (gameId, team) => {
         const score = rooms[gameId]['game']['scoreboard'][team] += 1;
         const submittedCards = shuffle(Object.values(rooms[gameId]['game']['submissions']));
-        const currentRound = rooms[gameId]['game']['currentRound']
+        const currentRound = rooms[gameId]['game']['currentRound'] + 1;
         const color = team === 'black' ? 'bg-black' : 'bg-danger';
         
         if (score > 2) {
@@ -511,7 +501,12 @@ module.exports = io => {
 
         if (isJoined) {
             if (currentJoins.length > 4) {
-                io.to(socketId).emit('waitingForFirstPlayerToStart', currentJoins[0]);
+                if (currentJoins[0] === name) {
+                    io.to(socketId).emit('notifyFirstTurn');
+                }
+                else {
+                    io.to(socketId).emit('waitingForFirstPlayerToStart', currentJoins[0]);
+                }
             }
             else {
                 io.to(socketId).emit('morePlayersNeeded', 5 - currentJoins.length);

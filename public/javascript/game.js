@@ -22,7 +22,7 @@ $(document).ready(function() {
         console.log("new session ID issued: ", sessionID)
         window.sessionStorage.setItem("sessionID", sessionID);
         const newSessionID = window.sessionStorage.getItem('sessionID');
-        console.log("new session ID in storage: ", newSessionID);
+        console.log("new session ID: ", newSessionID);
     });
 
     socket.on('nameIsUnavailable', () => {
@@ -44,7 +44,6 @@ $(document).ready(function() {
     });
     
     socket.on('offerTour', name => {
-        console.log("offerTour")
         handle = name;
         document.documentElement.scrollTop = 0;
     
@@ -60,6 +59,9 @@ $(document).ready(function() {
     })
 
     socket.on('gameInProgress', (scoreboard, currentRound) => {
+        $('#winnerModal').modal('hide');
+        $('#identityModal').off('hidden.bs.modal');
+        $('#identityModal').modal('hide');
         const btn = $(`<p class="action staticMsg notTurnButt">Game is in progess . . .</p>`);
         anim(btn, 'buttonDiv');
         
@@ -120,7 +122,6 @@ $(document).ready(function() {
     });
 
     socket.on('admitReturningPlayerToRoom', (players, name, chat) => {
-        console.log("admitReturningPlayerToRoom")
         $('#buttonDiv').off('click');
         if (!handle) {
             handle = name;
@@ -134,8 +135,6 @@ $(document).ready(function() {
     });
 
     socket.on('admitReturningPlayerToGame', (name, room, chat, isPlaying) => {
-        console.log("admitReturningPlayerToGame")
-
         $('#buttonDiv').off('click');
         if (!handle) {
             handle = name;
@@ -165,7 +164,6 @@ $(document).ready(function() {
     }); 
     
     socket.on('aNewPlayerHasEnteredTheRoom', obj => {
-        console.log("aNewPlayerHasEnteredTheRoom");
         const p = `<p id="chat${obj.handle}">${obj.handle}</p>`;
         $('#currentPlayers').append(p);
 
@@ -173,14 +171,12 @@ $(document).ready(function() {
     });
 
     socket.on('playerHasReenteredTheRoom', player => {
-        console.log("playerHasReenteredTheRoom")
         $('#chat'+player).remove();
         const p = `<p id="chat${player}">${player}</p>`;
         $('#currentPlayers').append(p);
     });
     
     socket.on('rmvPlayer', player => {
-        console.log("rmvPlayer");
         $('#chat'+player).remove();
 
         const p = `<p id="chat${player}" class="text-muted">${player}</p>`;
@@ -212,7 +208,6 @@ $(document).ready(function() {
     })
     
     socket.on('idCard', (idCard, newGameMsg, redPlayersMsg) => {
-        console.log({idCard});
         $('html').css('height', '100%');
         $('body').css('height', '100%');
         $('#playerIdentity').html('');
@@ -334,17 +329,18 @@ $(document).ready(function() {
     });
     
     socket.on('votedUp', proposalApprovedMsg => {    
+        $('#outcomeModal').modal('hide');
         insertMsg(proposalApprovedMsg);
         const btn = $(`<p class="action staticMsg notTurnButt">Waiting for submissions . . . </p>`);
         anim(btn, 'buttonDiv');
     });
     
     socket.on('votedDown', proposalRejectedMsg => {
+        $('#outcomeModal').modal('hide');
         insertMsg(proposalRejectedMsg);
     });
     
     socket.on('roundModal', (roundCards) => {
-        console.log({roundCards});
         $('#executeWarning').css('display', 'none');
         $('#executeButt').off('click');
         $('#pass').prop('checked', false);
@@ -721,7 +717,7 @@ $(document).ready(function() {
     const getIdentities = obj => {
         $('#playerIdentities').html('');
         delete obj[handle];
-        for (let player in obj) {
+        for (let player in obj) {getIdentities
             const identityDiv = document.createElement('div');
             identityDiv.innerHTML = `
                 <p class="text-center text-nowrap">${player}</p>
