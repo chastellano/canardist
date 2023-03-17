@@ -105,8 +105,10 @@ module.exports = io => {
             }
         });
 
-        socket.on('checkNameIsAvailable', requestedName => {            
-                if (rooms[gameId] === null) { 
+        socket.on('checkNameIsAvailable', requestedName => {
+                console.log(rooms[gameId]);
+                if (!rooms[gameId]) {
+                    console.log("null");
                     rooms[gameId] = { players: {}, sessionIds: [], game: {}, chat: [], joins: [] }
                 }
 
@@ -404,10 +406,10 @@ module.exports = io => {
     });
 
     const archiveMessage = (gameId, message) => {
-        if (rooms[gameId]['chat'] === null){
+        if (!rooms[gameId]['chat']){
             rooms[gameId]['chat'] = [];
         }
-        
+
         rooms[gameId]['chat'].push(message);
         if(rooms[gameId]['chat'].length > 50) {
             rooms[gameId]['chat'].shift();
