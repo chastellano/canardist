@@ -14,15 +14,17 @@ $(document).ready(function() {
 
     socket.on("checkForExistingSession", () => {
         sessionID = window.sessionStorage.getItem('sessionID');
-        console.log("SOCKET: ", socket.id, ", EXISTING SESSION: ", sessionID);
         socket.emit('existingSession', sessionID);
     });
     
     socket.on("assignNewSession", sessionID => {
-        console.log("new session ID issued: ", sessionID)
         window.sessionStorage.setItem("sessionID", sessionID);
         const newSessionID = window.sessionStorage.getItem('sessionID');
-        console.log("new session ID: ", newSessionID);
+        $('#enter').fadeIn('slow').focus();
+    });
+
+    socket.on("invitePlayerToRoom", () => {
+        $('#enter').fadeIn('slow').focus();
     });
 
     socket.on('nameIsUnavailable', () => {
@@ -47,15 +49,13 @@ $(document).ready(function() {
         handle = name;
         document.documentElement.scrollTop = 0;
     
-        displayConsole();
-    
+        
         $('#takeTourButt').on('click', tour);
         $('#imGoodButt').on('click', () => {
             socket.emit('requestEntranceToRoom');           
         });
-
-        $('#welcomeModal').on('shown.bs.modal', () => $('#imGoodButt').focus());
-        $('#welcomeModal').modal('show');
+        
+        displayConsole(true);
     })
 
     socket.on('gameInProgress', (scoreboard, currentRound) => {
@@ -76,7 +76,8 @@ $(document).ready(function() {
         }
         $('#scoreboardDiv').css('display', 'none');
         $('#playerIdentity').html('');
-    
+        $('#chatBody').html('');
+
         const welcomeMsg = `<p class="scrollPush text-center text-white bg-black bold">WELCOME TO THE ROOM!</p>`;
         insertMsg(welcomeMsg);
 
@@ -90,7 +91,7 @@ $(document).ready(function() {
         
         populatePlayerDropdown(players);
         showScoreboard(scoreboard.black, scoreboard.red, currentRound);
-        displayConsole();
+        displayConsole(false);
     });
 
     socket.on('admitPlayerToRoom', (players, name, isGameFull) => {
@@ -99,6 +100,7 @@ $(document).ready(function() {
             handle = name;
         }
         $('#scoreboardDiv').css('display', 'none');
+        $('#chatBody').html('');
     
         const welcomeMsg = `<p class="scrollPush text-center text-white bg-black bold">WELCOME TO THE ROOM!</p>`;
         insertMsg(welcomeMsg);
@@ -118,7 +120,7 @@ $(document).ready(function() {
         });
 
         populatePlayerDropdown(players);
-        displayConsole();
+        displayConsole(false);
     });
 
     socket.on('admitReturningPlayerToRoom', (players, name, chat) => {
@@ -131,7 +133,7 @@ $(document).ready(function() {
         $('#chatBody').append(chat.join(''));
         
         populatePlayerDropdown(players);
-        displayConsole();
+        displayConsole(false);
     });
 
     socket.on('admitReturningPlayerToGame', (name, room, chat, isPlaying) => {
@@ -160,7 +162,7 @@ $(document).ready(function() {
         
         showScoreboard(room.game.scoreboard.black, room.game.scoreboard.red, room.game.currentRound + 1);
         populatePlayerDropdown(Object.values(room.players));
-        displayConsole();
+        displayConsole(false);
     }); 
     
     socket.on('aNewPlayerHasEnteredTheRoom', obj => {
@@ -237,8 +239,9 @@ $(document).ready(function() {
     
     });
     
-    socket.on('notTurn', turn => {
-        const btn = $(`<p class="action staticMsg notTurnButt">${turn}'s turn . . .</p>`);
+    socket.on('notTurn', name => {
+        const turn = name.slice(-1).toUpperCase() === 'S' ? name + "'" : name + "'s";
+        const btn = $(`<p class="action staticMsg notTurnButt">${turn} turn . . .</p>`);
         anim(btn, 'buttonDiv');
     });
     
@@ -253,30 +256,17 @@ $(document).ready(function() {
         });
     
         $('#proposeModal').modal('show');
-        
-        const proposal = async (round, max) => {
-            try {
-                const checked = await checkcheck(round, max);
-                $('#roundButt').off('click');
-                const btn = $(`<p class="action staticMsg notTurnButt"> . . . </p>`);
-                anim(btn, 'buttonDiv');
-                $('#proposeModal').modal('hide');
-                $('#yourTurn').css('display', 'none');
-                socket.emit('sendProposal', checked);
-            } 
-            catch (error) {
-                console.log(error)
-            }
-        }
     
-        proposal(round, max); 
+        showProposalSelectionModal(round, max); 
     });
     
-    socket.on('voteLabels', labels => {
+    socket.on('getPlayerVote', (labels, name) => {
         $('#outcomeModal').off();
         $('#outcomeModal').modal('hide');
         $('#voteSubmit').off('click');
         $('#voteButt').off('click');
+        const turn = name.slice(-1).toUpperCase() === 'S' ? name + "'" : name + "'s";
+        $('#voteModalTitle').html(`Do you approve ${turn} proposal?`)
         const voteBtn = $(`<button id="voteButt" style="position:absolute" class="action btn btn-success col bold" type="button">CLICK TO VOTE</button>`);
 
         anim(voteBtn, 'buttonDiv');
@@ -355,8 +345,6 @@ $(document).ready(function() {
                     socket.emit('roundResolve', roundCards[0]);
                 } else if (selected.attr('id') === 'fail') {
                     socket.emit('roundResolve', roundCards[1]);
-                } else {
-                    console.log('Error');
                 }
                 $('#executeButt').off('click')
                 $('#roundModal').modal('hide');
@@ -421,6 +409,7 @@ $(document).ready(function() {
     });
     
     socket.on('winner', (color, outcomeCards, ids, msg) => {
+        $('#outcomeModal').modal('hide');
         const scoreEl = $(`<span id="${color}Num">3</span>`);
         $(`#${color}Num`).fadeOut('slow', function() {
             $(this).remove()
@@ -437,24 +426,30 @@ $(document).ready(function() {
         identityReveal(ids);
     });
 
-    const displayConsole = () => {
+    const displayConsole = (offerTour) => {
         $('#enlistButt').off('click');
-        $('#roomFull').css('display', 'none');
-        $('#joinDiv').css('display', 'none');
-        $('#nameWarning').css('display', 'none');
         $('#nameModal').modal('hide');
         $('#nameModal').off('click');
-        $('#gameBody').fadeIn('slow', () => {
-            if ($(window).width() < 576) {
-                $('body').addClass('bg-dark');
-            }
-            if ($('#consoleDiv').prop('scrollHeight') > $(window).height()) {
-                $('#consoleDiv').css('border-bottom-left-radius', '0');
-                $('#consoleDiv').css('border-bottom-right-radius', '0');
-            }
+        $('#roomFull').css('display', 'none');
+        $('#nameWarning').css('display', 'none');
+        $('#joinDiv').fadeOut('slow', () => {
+            $('#gameBody').fadeIn('slow', () => {
+                if ($(window).width() < 576) {
+                    $('body').addClass('bg-dark');
+                }
+                if ($('#consoleDiv').prop('scrollHeight') > $(window).height()) {
+                    $('#consoleDiv').css('border-bottom-left-radius', '0');
+                    $('#consoleDiv').css('border-bottom-right-radius', '0');
+                }
+
+                if(offerTour) {
+                    $('#welcomeModal').on('shown.bs.modal', () => $('#imGoodButt').focus());
+                    $('#welcomeModal').modal('show');
+                }
+            });
+            $('#chatBody')[0].scrollTop = $('#chatBody')[0].scrollHeight;
+            $('#chatInput').focus();
         });
-        $('#chatBody')[0].scrollTop = $('#chatBody')[0].scrollHeight;
-        $('#chatInput').focus();
     }
 
     const tour = () => {
@@ -573,7 +568,6 @@ $(document).ready(function() {
                     onTour = false
                     $('[data-toggle="tooltip"]').tooltip('hide');
                     $('[data-toggle="tooltip"]').tooltip('disable');
-                    // $('#chatBody').html('');
                     $('#chatInp').off('click');
                     break;
     
@@ -583,7 +577,6 @@ $(document).ready(function() {
                     $('[data-toggle="tooltip"]').tooltip('hide');
                     $('[data-toggle="tooltip"]').tooltip('disable');
                     $('#chatInp').off('click');
-                    // $('#chatBody').html('');
                     break;
             }
         }
@@ -701,6 +694,16 @@ $(document).ready(function() {
         
         $('#reloadModal').modal('show');
     }
+
+    const showProposalSelectionModal = async (round, max) => {
+        const checked = await checkcheck(round, max);
+        $('#roundButt').off('click');
+        const btn = $(`<p class="action staticMsg notTurnButt"> . . . </p>`);
+        anim(btn, 'buttonDiv');
+        $('#proposeModal').modal('hide');
+        $('#yourTurn').css('display', 'none');
+        socket.emit('sendProposal', checked);
+    }
     
     //takes array of cards and element id, populates element id with images of cards from array, reveals appropriate modal
     const showResult = (arr, id) => {
@@ -745,7 +748,7 @@ $(document).ready(function() {
         })   
     }
 
-    $('#join').focus().click(() =>{
+    $('#enter').focus().click(() =>{
         $('#nameModal').modal('show');
         $('#nameModal').on('shown.bs.modal', () => $('#nameInput').focus());
     });

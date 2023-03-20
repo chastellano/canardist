@@ -96,6 +96,12 @@ module.exports = io => {
 
                         emitToAllExcept('playerHasReenteredTheRoom', gameId, handle, handle);
                     }
+                    else {
+                        io.to(socket.id).emit("invitePlayerToRoom");
+                    }
+                } 
+                else {
+                    io.to(socket.id).emit("invitePlayerToRoom");
                 }
             }
             else {
@@ -106,9 +112,7 @@ module.exports = io => {
         });
 
         socket.on('checkNameIsAvailable', requestedName => {
-                console.log(rooms[gameId]);
                 if (!rooms[gameId]) {
-                    console.log("null");
                     rooms[gameId] = { players: {}, sessionIds: [], game: {}, chat: [], joins: [] }
                 }
 
@@ -305,7 +309,7 @@ module.exports = io => {
             io.to(gameId).emit('chatRcv', proposalMessage);
 
             for (let player of playersInGame) {
-                io.to(player.socketId).emit('voteLabels', labels);
+                io.to(player.socketId).emit('getPlayerVote', labels, rooms[gameId]['game']['turn']);
             }
         });
 
@@ -549,8 +553,7 @@ module.exports = io => {
                 else {
                     const playersOnCurrentMission = rooms[gameId]['game']['playersOnCurrentMission'];
                     const labels = getMissionLabels(gameId, playersOnCurrentMission);
-                    // const proposalMessage = playerProposal(rooms[gameId]['game']['turn'], playersOnCurrentMission);
-                    io.to(socketId).emit('voteLabels', labels, null);
+                    io.to(socketId).emit('getPlayerVote', labels, rooms[gameId]['game']['turn']);
                 }
             }
             else {

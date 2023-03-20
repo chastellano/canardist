@@ -17,8 +17,9 @@
     <body>
         <div id="mainContainer" class="container mx-auto m-0 p-0 h-100">
             <div id="joinDiv" class="text-center" style="display:block">
-                <h2 id="firstHeader" class="text-center mb-4">CANARDIST</h2>
-                <button class="btn btn-lg btn-dark btn-outset mt-3" id="join">Enter</button>
+                <h2 id="firstHeader" class="text-center">CANARDIST</h2>
+                <p>A GAME OF DEDUCTION AND DECEPTION</p>
+                <button class="btn btn-lg btn-dark btn-outset mt-4" id="enter" style="display:none">Enter</button>
                 <div id="roomFull" class="mt-4" style="display:none">
                     <p class="text-danger">Game is in progress, try another room.</p>
                 </div> 
@@ -170,7 +171,7 @@
                         <div class="modal-body pt-3 px-3 pb-0">
                             <div class="text-center">
                                 <p><strong>YOU GET TO GO FIRST!</strong></p>
-                                <p>Once everyone who is playing has pressed JOIN NEW GAME, press START GAME to begin.</p>
+                                <p>Once everyone has joined the game, press START GAME to begin.</p>
                             </div>
                         </div>
                         <div class="modal-footer border-0 mt-0">
@@ -272,7 +273,7 @@
                     <div class="modal-content bg-light mx-auto">
                         <div class="modal-body pt-4">
                             <div>
-                                <p class="text-center"><strong>Do you approve this proposal?</strong></p>
+                                <p id="voteModalTitle" class="text-center" style="font-weight:800">Do you approve this proposal?</p>
                             </div>
                             <div id="proposedPlayers" class="d-flex flex-wrap justify-content-center mb-4">
                                 <div class="userButtDiv">
