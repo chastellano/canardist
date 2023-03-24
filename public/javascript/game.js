@@ -167,22 +167,25 @@ $(document).ready(function() {
     }); 
     
     socket.on('aNewPlayerHasEnteredTheRoom', obj => {
-        const p = `<p id="chat${obj.handle}">${obj.handle}</p>`;
+        const handleNoWhitespace = obj.handle.replace(/\s/g, "")
+        const p = `<p id="chat${handleNoWhitespace}">${obj.handle}</p>`;
         $('#currentPlayers').append(p);
 
         insertMsg(obj.newPlayerMsg);
     });
 
     socket.on('playerHasReenteredTheRoom', player => {
-        $('#chat'+player).remove();
-        const p = `<p id="chat${player}">${player}</p>`;
+        const handleNoWhitespace = player.replace(/\s/g, "")
+        $('#chat'+handleNoWhitespace).remove();
+        const p = `<p id="chat${handleNoWhitespace}">${player}</p>`;
         $('#currentPlayers').append(p);
     });
     
     socket.on('rmvPlayer', player => {
-        $('#chat'+player).remove();
+        const handleNoWhitespace = player.replace(/\s/g, "")
+        $('#chat'+handleNoWhitespace).remove();
 
-        const p = `<p id="chat${player}" class="text-muted">${player}</p>`;
+        const p = `<p id="chat${handleNoWhitespace}" class="text-muted">${player}</p>`;
         $('#currentPlayers').append(p);
     });
 
@@ -640,10 +643,11 @@ $(document).ready(function() {
         $('#currentPlayers').html('');
         players.forEach(player => {
             let dropdownItem;
+            const handleNoWhitespace = player.name.replace(/\s/g, "")
             if (player.connected) {
-                dropdownItem = `<p id="chat${player.name}">${player.name}</p>`
+                dropdownItem = `<p id="chat${handleNoWhitespace}">${player.name}</p>`
             } else {
-                dropdownItem = `<p id="chat${player.name}" class="text-muted">${player.name}</p>`
+                dropdownItem = `<p id="chat${handleNoWhitespace}" class="text-muted">${player.name}</p>`
             }
             $('#currentPlayers').append(dropdownItem);
         });
