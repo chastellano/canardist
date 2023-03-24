@@ -278,7 +278,7 @@ module.exports = io => {
                 if (player === turn) {
                     io.to(playerSock).emit('turn', current, player);
                 } else {
-                    io.to(playerSock).emit('notTurn', turn);
+                    io.to(playerSock).emit('notTurn', {nextUp: turn, roundMax: rooms[gameId]['game']['roundMax']});
                 }
             });
 
@@ -356,7 +356,7 @@ module.exports = io => {
                     const nextSock = rooms[gameId]['players'][nextUp]['socketId'];
 
                     io.to(nextSock).emit('turn', currentRound, nextUp);
-                    emitToAllExcept('notTurn', gameId, nextUp, nextUp);
+                    emitToAllExcept('notTurn', gameId, {nextUp, roundMax: rooms[gameId]['game']['roundMax']} , nextUp);
                 }
             }
         });
@@ -403,7 +403,7 @@ module.exports = io => {
                 if (socket.id === nextSocketId) {
                     io.to(socket.id).emit('turn', nextRound, nextUp)
                 } else {
-                    io.to(socket.id).emit('notTurn', nextUp);
+                    io.to(socket.id).emit('notTurn', {nextUp, roundMax: rooms[gameId]['game']['roundMax']});
                 }
             }
         })
@@ -537,7 +537,7 @@ module.exports = io => {
         
         //player needs to submit proposal
         if (!proposalSubmitted) {
-            isPlayersTurn ? io.to(socketId).emit('turn') : io.to(socketId).emit('notTurn', rooms[gameId]['game']['turn']);
+            isPlayersTurn ? io.to(socketId).emit('turn') : io.to(socketId).emit('notTurn', {nextUp: rooms[gameId]['game']['turn'], roundMax: rooms[gameId]['game']['roundMax']});
         }
         else {
             const yeas =  rooms[gameId]['game']['vote']['yeas'];

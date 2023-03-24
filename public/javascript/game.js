@@ -13,13 +13,14 @@ let lastWidth = $(window).width();
 $(document).ready(function() {
 
     socket.on("checkForExistingSession", () => {
-        sessionID = window.sessionStorage.getItem('sessionID');
+        sessionID = window.localStorage.getItem('sessionID');
+        console.log('existingSession', sessionID)
         socket.emit('existingSession', sessionID);
     });
     
     socket.on("assignNewSession", sessionID => {
-        window.sessionStorage.setItem("sessionID", sessionID);
-        const newSessionID = window.sessionStorage.getItem('sessionID');
+        console.log('new session assigned', sessionID);
+        window.localStorage.setItem("sessionID", sessionID);
         $('#enter').fadeIn('slow').focus();
     });
 
@@ -239,9 +240,8 @@ $(document).ready(function() {
     
     });
     
-    socket.on('notTurn', name => {
-        const turn = name.slice(-1).toUpperCase() === 'S' ? name + "'" : name + "'s";
-        const btn = $(`<p class="action staticMsg notTurnButt">${turn} turn . . .</p>`);
+    socket.on('notTurn', obj => {
+        const btn = $(`<p class="action staticMsg notTurnButt">${obj.nextUp} is choosing ${obj.roundMax} players . . .</p>`);
         anim(btn, 'buttonDiv');
     });
     
