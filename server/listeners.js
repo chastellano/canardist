@@ -67,8 +67,9 @@ module.exports = io => {
         socket.on('existingSession', sessionId => {
             if (sessionId) {
                 socket.sessionId = sessionId;
-
+                console.log("session exists");
                 if (rooms[gameId]){
+                    console.log("room exists");
                     const playersWithMatchingSession = Object.values(rooms[gameId]['players']).filter(p => p.sessionId === sessionId)
                     const isReturningPlayer =  playersWithMatchingSession.length > 0;
 
@@ -113,8 +114,10 @@ module.exports = io => {
 
         socket.on('checkNameIsAvailable', requestedName => {
                 if (!rooms[gameId]) {
+                    console.log("creating game")
                     rooms[gameId] = { players: {}, sessionIds: [], game: {}, chat: [], joins: [] }
                 }
+                console.log(rooms[gameId]['players']);
 
                 if (rooms[gameId]['players'][requestedName]) {
                     io.to(socket.id).emit('nameIsUnavailable');
