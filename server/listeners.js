@@ -7,8 +7,6 @@ module.exports = io => {
     const { newGame, redPlayers, playerChat, newPlayerJoined, playerProposal, playerVote, proposalDecision, teamWinsRound, teamWinsGame, specialRound, resetGame } = require('./messages');
     const randomId = () => crypto.randomBytes(8).toString("hex");
 
-    let numberOfGameJoins = 0;
-
     class Game {
         constructor() {
             this.sessionIds = [];
@@ -148,19 +146,13 @@ module.exports = io => {
         });
 
         socket.on('disconnect', () => {
-            numberOfGameJoins = 0 
-
             if (handle && rooms[gameId] && rooms[gameId]['players'] && rooms[gameId]['players'][handle]) {
                 rooms[gameId]['players'][handle]['connected'] = false;
                 const numRemainingConnectedPlayers = Object.values(rooms[gameId]['players']).filter(p => p.connected).length;
 
                 if (numRemainingConnectedPlayers === 0) {
-                    if (activeIds.indexOf(gameId) !== -1) {
-                        const i = activeIds.indexOf(gameId);
-                        activeIds.splice(i, 1);
-                    }
-                    delete rooms[gameId];
-                    return;
+                    console.log("all players disconnected, starting countdown to delete room");
+                    deleteRoomCountdown(gameId, 30000, 20);
                 }
 
                 io.to(gameId).emit('rmvPlayer', handle);
@@ -189,7 +181,7 @@ module.exports = io => {
             io.to(gameId).emit('exitGame', resetGameMsg);
         });
 
-        socket.on('joinGame', () => {         
+        socket.on('joinGame', () => {
             const previousJoins = rooms[gameId]['joins'].length;
 
             if (previousJoins === 10) {
@@ -532,6 +524,34 @@ module.exports = io => {
         else {
             io.to(socketId).emit('inviteToJoinGame');
         }
+    }
+
+    const deleteRoomCountdown = (gameId, interval, timesToCheck) => {
+        let x = 0;
+        const checkIfAnyPlayersAreConnectedToRoom = setInterval(() => {
+            const playersConnected = isAnyPlayersConnected(gameId);
+            if (!playersConnected && ++x === timesToCheck) {
+                const gameIndex = activeIds.indexOf(gameId);
+                if (gameIndex !== -1) {
+                    activeIds.splice(gameIndex, 1);
+                }
+                delete rooms[gameId];
+                console.log("idle room countdown expired, deleting ", gameId);
+                clearInterval(checkIfAnyPlayersAreConnectedToRoom);
+            }
+            else if (playersConnected) {
+                clearInterval(checkIfAnyPlayersAreConnectedToRoom);
+            }
+        }, interval);
+    }
+
+    const isAnyPlayersConnected = gameId => {
+        const numRemainingConnectedPlayers = Object.values(rooms[gameId]['players']).filter(p => p.connected).length;
+        if (numRemainingConnectedPlayers === 0) {
+            return false;
+        }
+
+        return true;
     }
 
     const emitGameStateToReturningPlayer = (name, socketId, gameId) => {
