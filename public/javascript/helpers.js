@@ -53,6 +53,8 @@ export const cards = {
     "ks": "cardsJS/cards/KS.svg"
 }
 
+export const cardBack = "cardsJS/cards/BLUE_BACK.svg";
+
 export function checkcheck (round, max) {
     $('#roundPropose').off('click');
     $('.proposeWarning').css('display', 'none');

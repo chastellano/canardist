@@ -1,12 +1,13 @@
 import baseUrl from './baseUrl.js'
 const socket = io.connect(baseUrl);
-import { anim, cards, checkcheck } from './helpers.js';
+import { anim, cards, checkcheck, cardBack } from './helpers.js';
 
 $("meta[property='og:url']").attr("content", window.location.href);
 
 let onTour;
 let sessionID;
 let handle = '';
+let identityCard;
 let lastHeight = $(window).height();
 let lastWidth = $(window).width();
 
@@ -14,6 +15,7 @@ $(document).ready(function() {
 
     socket.on("checkForExistingSession", () => {
         sessionID = window.localStorage.getItem('sessionID');
+        // sessionID = window.sessionStorage.getItem('sessionID');
         console.log('existingSession', sessionID)
         socket.emit('existingSession', sessionID);
     });
@@ -21,6 +23,7 @@ $(document).ready(function() {
     socket.on("assignNewSession", sessionID => {
         console.log('new session assigned', sessionID);
         window.localStorage.setItem("sessionID", sessionID);
+        // window.sessionStorage.setItem("sessionID", sessionID);
         $('#enter').fadeIn('slow').focus();
     });
 
@@ -153,7 +156,7 @@ $(document).ready(function() {
 
         
         if (isPlaying) {
-            const cardEl = $(`<img class="img-fluid identity" style="display:inline" src=${cards[room.players[name]['idCard']]} />`);
+            const cardEl = $(`<img id="idCard" class="img-fluid identity" style="display:inline" src=${cards[room.players[name]['idCard']]} />`);
             $('#playerIdentity').append(cardEl);
         } 
         else {
@@ -214,10 +217,11 @@ $(document).ready(function() {
     })
     
     socket.on('idCard', (idCard, newGameMsg, redPlayersMsg) => {
+        identityCard = idCard;
         $('html').css('height', '100%');
         $('body').css('height', '100%');
         $('#playerIdentity').html('');
-        const cardEl = $(`<img class="img-fluid identity" style="display:inline" src=${cards[idCard]} />`);
+        const cardEl = $(`<img id="idCard" class="img-fluid identity" style="display:inline" src=${cards[idCard]} />`);
         $('#playerIdentity').append(cardEl);
 
         $('#joinGameButt').off('click');
@@ -679,7 +683,31 @@ $(document).ready(function() {
 
     $('#reload').on('click', () => {
         reloadModal();
-    })
+    });
+
+    $('#playerIdentity').on('click', () => {
+        if (identityCard != null || onTour) {
+            if ($('#idCard').attr('src') != cardBack) {
+                $('#playerIdentity').fadeOut('fast', () => {
+                    $('#playerIdentity').html('');
+                    const cardEl = $(`<img id='idCard' class="img-fluid identity" style="display:inline" src=${cardBack} />`);
+                    $('#playerIdentity').append(cardEl);
+                    $('#playerIdentity').fadeIn('fast');
+                });
+            }
+            else {
+                $('#playerIdentity').fadeOut('fast', () => {
+                    $('#playerIdentity').html('');
+                    const cardEl = onTour 
+                    ? $(`<img id="idCard" class="img-fluid identity" style="display:inline" src=${cards.ad} />`)          
+                    : $(`<img id="idCard" class="img-fluid identity" style="display:inline" src=${cards[identityCard]} />`);
+
+                    $('#playerIdentity').append(cardEl);
+                    $('#playerIdentity').fadeIn('fast');
+                });
+            }
+        }
+    });
     
     const reloadModal = () => {
         $('#okButt').on('click', () => {

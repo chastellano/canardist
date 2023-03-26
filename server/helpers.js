@@ -111,6 +111,8 @@ function buildGameObjects (room) {
 
     //populate Player objs
     for (let player of room['joins']) {
+        console.log("player: ", player);
+        console.log("players playing current game: ", room['players'])
         
         //assign teams and id cards
         const card = dealOut(1, cards);
